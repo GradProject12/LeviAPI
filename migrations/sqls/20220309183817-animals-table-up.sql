@@ -1,0 +1,7 @@
+CREATE TABLE animals (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    picture VARCHAR(100) NOT NULL,
+    sound VARCHAR(100) NOT NULL,
+    spelled VARCHAR(100) NOT NULL
+);
