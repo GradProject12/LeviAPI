@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const verifyAuthToken = (req, res, next) => {
   try {
     const authorizationHeader = req.headers.authorization;
+    const token = authorizationHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.TOKEN_SERCRET);
     next();
   } catch (error) {
@@ -12,4 +13,4 @@ const verifyAuthToken = (req, res, next) => {
   }
 };
 
-module.exports = verifyAuthToken 
+module.exports = verifyAuthToken;

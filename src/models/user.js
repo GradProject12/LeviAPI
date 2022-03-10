@@ -87,7 +87,6 @@ class UserStore {
       await conn.query(sql2, [Date.now(),username]);
       if (result.rows.length) {
         const user = result.rows[0];
-        console.log(user)
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, user.password))
         return user;
       }
