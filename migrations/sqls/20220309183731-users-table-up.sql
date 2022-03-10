@@ -3,7 +3,10 @@ CREATE TABLE users (
     username VARCHAR(40) UNIQUE  NOT NULL,
     email VARCHAR(40) UNIQUE  NOT NULL,
     password VARCHAR NOT NULL,
-    created_on TIMESTAMP NOT NULL,
+    created_on TIMESTAMP DEFAULT Now()  NOT NULL,
     last_login TIMESTAMP 
-
 );
+
+INSERT INTO users(username,
+email,
+password) VALUES('admin','admin@levi.com','levi123');

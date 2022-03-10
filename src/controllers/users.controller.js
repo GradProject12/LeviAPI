@@ -32,7 +32,7 @@ const create = async (req, res) => {
   try {
     const newUser = await store.create(user);
     const token = jwt.sign({ user: newUser }, process.env.TOKEN_SERCRET);
-    res.json({ username, token: token });
+    res.json({ username: user.username, token: token });
   } catch (error) {
     res.status(404);
     res.json(error);
@@ -71,7 +71,7 @@ const authenticate = async (req, res) => {
   try {
     const userr = await store.authenticate(user.username, user.password);
     const token = jwt.sign({ userr }, process.env.TOKEN_SERCRET);
-    res.json({ username, token });
+    res.json({ username:userr.username, token });
   } catch (error) {
     res.status(404);
     res.json(`${error}`);

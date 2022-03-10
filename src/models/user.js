@@ -80,13 +80,16 @@ class UserStore {
   async authenticate(username, password) {
     try {
       const sql = "SELECT * FROM users WHERE username=($1)";
+      const sql2 = "UPDATE users SET last_login=(to_timestamp($1/ 1000.0)) where username=($2)";
       const conn = await client.connect();
       const result = await conn.query(sql, [username]);
+      console.log(result.rows[0])
       conn.release();
+      await conn.query(sql2, [Date.now(),username]);
       if (result.rows.length) {
         const user = result.rows[0];
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, user.password))
-          return user;
+        return user;
       }
     } catch (error) {
       throw new Error(`Something Wrong ${error}`);

@@ -13,7 +13,7 @@ app.use(
     extended: true,
   })
   );
-  app.use(morgan('combined'));
+  // app.use(morgan('combined'));
   app.use(helmet());
   app.use(cors())
 app.use(routes);

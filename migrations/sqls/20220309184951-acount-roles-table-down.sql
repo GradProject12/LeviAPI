@@ -1,1 +1,1 @@
-DROP TABLE acount_roles;
+DROP TABLE account_roles;
