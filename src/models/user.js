@@ -30,16 +30,15 @@ class UserStore {
   async create(user) {
     try {
       const sql =
-        "INSERT INTO users(firstName,lastName,username,password) VALUES($1,$2,$3,$4) RETURNING *";
+        "INSERT INTO users(username,email,password) VALUES($1,$2,$3) RETURNING *";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
         user.password + BCRYPT_PASSWORD,
         parseInt(SALT_ROUNDS)
       );
       const result = await conn.query(sql, [
-        user.firstName,
-        user.lastName,
         user.username,
+        user.email,
         hash,
       ]);
       conn.release();
@@ -52,12 +51,11 @@ class UserStore {
   async update(user, id) {
     try {
       const sql =
-        "UPDATE users SET firstName=($1), lastName=($2), username=($3), password=($4) where id=($5) RETURNING * ";
+        "UPDATE users SET username=($1), email=($2), password=($3) where id=($4) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
-        user.firstName,
-        user.lastName,
         user.username,
+        user.email,
         user.password,
         id,
       ]);

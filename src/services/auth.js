@@ -1,4 +1,4 @@
-const jwt = require("jwt");
+const jwt = require("jsonwebtoken");
 
 const verifyAuthToken = (req, res, next) => {
   try {
@@ -11,3 +11,5 @@ const verifyAuthToken = (req, res, next) => {
     return;
   }
 };
+
+module.exports = verifyAuthToken 

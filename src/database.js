@@ -1,19 +1,21 @@
 const dotenv = require("dotenv");
-const Pool = require("pool");
+const pg = require('pg')
 
 dotenv.config();
-const host = POSTGRES_HOST;
-const database = POSTGRES_DB;
-const user = POSTGRES_USER;
-const port = POSTGRES_PASSWORD;
-const password = POSTGRES_PORT;
+const {
+  POSTGRES_HOST,
+  POSTGRES_DB,
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_PORT,
+} = process.env;
 
-const client = new Pool({
-  host: host,
-  database: database,
-  user: user,
-  port: port,
-  password: password,
+const client = new pg.Pool({
+  host: POSTGRES_HOST,
+  database: POSTGRES_DB,
+  user: POSTGRES_USER,
+  port: POSTGRES_PORT,
+  password: POSTGRES_PASSWORD,
 });
 
 module.exports = client;
