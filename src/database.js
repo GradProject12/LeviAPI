@@ -8,20 +8,16 @@ const {
   POSTGRES_USER,
   POSTGRES_PASSWORD,
   POSTGRES_PORT,
-  NODE_ENV
+  DATABASE_URL,
+  NODE_ENV,
 } = process.env;
 
-const devConfig = {
-  host: POSTGRES_HOST,
-  database: POSTGRES_DB,
-  user: POSTGRES_USER,
-  port: POSTGRES_PORT,
-  password: POSTGRES_PASSWORD,
-};
+const devConfig = `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`;
 
-const prodConfig={
-  connectionString:process.env.DATABASE_URL,
-}
-const client = new pg.Pool(NODE_ENV==='production'?prodConfig:devConfig);
+const prodConfig = DATABASE_URL;
+
+const client = new pg.Pool({
+  connectionString: NODE_ENV === "production" ? prodConfig : devConfig,
+});
 
 module.exports = client;
