@@ -83,11 +83,11 @@ class UserStore {
       const sql2 = "UPDATE users SET last_login=(to_timestamp($1/ 1000.0)) where username=($2)";
       const conn = await client.connect();
       const result = await conn.query(sql, [username]);
-      console.log(result.rows[0])
       conn.release();
       await conn.query(sql2, [Date.now(),username]);
       if (result.rows.length) {
         const user = result.rows[0];
+        console.log(user)
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, user.password))
         return user;
       }

@@ -12,12 +12,17 @@ const {
   NODE_ENV,
 } = process.env;
 
-const devConfig = `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`;
+const devConfig = {
+  connectionString: `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`,
+};
 
-const prodConfig = DATABASE_URL;
+const prodConfig = {
+  connectionString: DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+};
 
-const client = new pg.Pool({
-  connectionString: NODE_ENV === "production" ? prodConfig : devConfig,
-});
+const client = new pg.Pool(NODE_ENV === "production" ? prodConfig : devConfig);
 
 module.exports = client;

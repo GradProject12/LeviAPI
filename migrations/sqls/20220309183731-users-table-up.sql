@@ -9,4 +9,4 @@ CREATE TABLE users (
 
 INSERT INTO users(username,
 email,
-password) VALUES('admin','admin@levi.com','levi123');
+password) VALUES('admin','admin@levi.com','$2a$10$d6Ch9XesJXbS6e7TTQr.B.TZ7.vIAwbabMpsTxXZfocD2fE13oAA.');
