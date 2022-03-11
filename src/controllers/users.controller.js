@@ -70,7 +70,7 @@ const authenticate = async (req, res) => {
   };
   try {
     const userr = await store.authenticate(user.username, user.password);
-    const token = jwt.sign({ userr }, process.env.TOKEN_SERCRET);
+    const token = jwt.sign({ userr }, process.env.TOKEN_SERCRET,{expiresIn:'30m'});
     res.json({ username:userr.username, token });
   } catch (error) {
     res.status(404);
