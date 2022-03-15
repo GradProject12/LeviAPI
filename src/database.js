@@ -5,15 +5,17 @@ dotenv.config();
 const {
   POSTGRES_HOST,
   POSTGRES_DB,
+  POSTGRES_DB_TEST,
   POSTGRES_USER,
   POSTGRES_PASSWORD,
   POSTGRES_PORT,
   DATABASE_URL,
   NODE_ENV,
+  ENV
 } = process.env;
 
 const devConfig = {
-  connectionString: `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`,
+  connectionString: `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${ENV==='dev'?POSTGRES_DB:POSTGRES_DB_TEST}`,
 };
 
 const prodConfig = {

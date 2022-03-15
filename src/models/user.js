@@ -18,7 +18,7 @@ class UserStore {
 
   async show(id) {
     try {
-      const sql = "SELECT * FROM users WHERE id=($1)";
+      const sql = "SELECT * FROM users WHERE user_id=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
@@ -30,7 +30,7 @@ class UserStore {
   async create(user) {
     try {
       const sql =
-        "INSERT INTO users(username,email,password) VALUES($1,$2,$3) RETURNING *";
+        "INSERT INTO users(username,email,password,phone,image) VALUES($1,$2,$3,$4,$5) RETURNING *";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
         user.password + BCRYPT_PASSWORD,
@@ -40,6 +40,8 @@ class UserStore {
         user.username,
         user.email,
         hash,
+        user.phone,
+        user.image
       ]);
       conn.release();
       return result.rows[0];
@@ -51,7 +53,7 @@ class UserStore {
   async update(user, id) {
     try {
       const sql =
-        "UPDATE users SET username=($1), email=($2), password=($3) where id=($4) RETURNING * ";
+        "UPDATE users SET username=($1), email=($2), password=($3) where user_id=($4) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         user.username,
@@ -67,7 +69,7 @@ class UserStore {
   }
   async delete(id) {
     try {
-      const sql = "DELETE FROM users WHERE id=($1) RETURNING * ";
+      const sql = "DELETE FROM users WHERE user_id=($1) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();

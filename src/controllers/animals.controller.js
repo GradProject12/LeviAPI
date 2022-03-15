@@ -33,7 +33,7 @@ const create = async (req, res) => {
     res.json(newanimal);
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(`${error}`);
   }
 };
 const update = async (req, res) => {

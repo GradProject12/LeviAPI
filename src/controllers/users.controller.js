@@ -28,6 +28,8 @@ const create = async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
+    phone: req.body.phone,
+    image: req.body.image,
   };
   try {
     const newUser = await store.create(user);
@@ -35,7 +37,7 @@ const create = async (req, res) => {
     res.json({ username: user.username, token: token });
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(`${error}`);
   }
 };
 const update = async (req, res) => {
@@ -70,8 +72,10 @@ const authenticate = async (req, res) => {
   };
   try {
     const userr = await store.authenticate(user.username, user.password);
-    const token = jwt.sign({ userr }, process.env.TOKEN_SERCRET,{expiresIn:'30m'});
-    res.json({ username:userr.username, token });
+    const token = jwt.sign({ userr }, process.env.TOKEN_SERCRET, {
+      expiresIn: "30m",
+    });
+    res.json({ username: userr.username, token });
   } catch (error) {
     res.status(404);
     res.json(`${error}`);
