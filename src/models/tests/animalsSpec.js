@@ -1,7 +1,5 @@
 const db = require("../../database");
-
 const AnimalStore = require("../animal");
-
 const store = new AnimalStore();
 
 describe("Animal Model", () => {
