@@ -3,10 +3,10 @@ const bcrypt = require("bcrypt");
 
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 
-class UserStore {
+class DoctorStore {
   async index() {
     try {
-      const sql = "SELECT * FROM users";
+      const sql = "SELECT * FROM doctors";
       const conn = await client.connect();
       const result = await conn.query(sql);
       conn.release();
@@ -18,7 +18,7 @@ class UserStore {
 
   async show(id) {
     try {
-      const sql = "SELECT * FROM users WHERE user_id=($1)";
+      const sql = "SELECT * FROM doctors WHERE id=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
@@ -27,21 +27,25 @@ class UserStore {
       throw new Error(`Something Wrong ${error}`);
     }
   }
-  async create(user) {
+  async create(doctor) {
     try {
       const sql =
-        "INSERT INTO users(username,email,password,phone,image) VALUES($1,$2,$3,$4,$5) RETURNING *";
+        "INSERT INTO doctors(full_name, email, phone, password, image, clinic_location, start_time, end_time, days_of_week) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
-        user.password + BCRYPT_PASSWORD,
+        doctor.password + BCRYPT_PASSWORD,
         parseInt(SALT_ROUNDS)
       );
       const result = await conn.query(sql, [
-        user.username,
-        user.email,
+        doctor.full_name,
+        doctor.email,
+        doctor.phone,
         hash,
-        user.phone,
-        user.image
+        doctor.image,
+        doctor.clinic_location,
+        doctor.start_time,
+        doctor.end_time,
+        doctor.days_of_week,
       ]);
       conn.release();
       return result.rows[0];
@@ -50,15 +54,21 @@ class UserStore {
     }
   }
 
-  async update(user, id) {
+  async update(doctor, id) {
     try {
       const sql =
-        "UPDATE users SET username=($1), email=($2), password=($3) where user_id=($4) RETURNING * ";
+        "UPDATE doctors SET full_name($1), email=($2), phone=($3), password=($4), image=($5), clinic_location=($6), start_time=($7), end_time=($8), days_of_week=($9) where id=($10) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
-        user.username,
-        user.email,
-        user.password,
+        doctor.full_name,
+        doctor.email,
+        doctor.phone,
+        doctor.password,
+        doctor.image,
+        doctor.clinic_location,
+        doctor.start_time,
+        doctor.end_time,
+        doctor.days_of_week,
         id,
       ]);
       conn.release();
@@ -69,7 +79,7 @@ class UserStore {
   }
   async delete(id) {
     try {
-      const sql = "DELETE FROM users WHERE user_id=($1) RETURNING * ";
+      const sql = "DELETE FROM doctors WHERE id=($1) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
@@ -81,16 +91,14 @@ class UserStore {
 
   async authenticate(username, password) {
     try {
-      const sql = "SELECT * FROM users WHERE username=($1)";
-      const sql2 = "UPDATE users SET last_login=(to_timestamp($1/ 1000.0)) where username=($2)";
+      const sql = "SELECT * FROM doctors WHERE username=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [username]);
       conn.release();
-      await conn.query(sql2, [Date.now(),username]);
       if (result.rows.length) {
-        const user = result.rows[0];
-        if (bcrypt.compareSync(password + BCRYPT_PASSWORD, user.password))
-        return user;
+        const doctor = result.rows[0];
+        if (bcrypt.compareSync(password + BCRYPT_PASSWORD, doctor.password))
+          return doctor;
       }
     } catch (error) {
       throw new Error(`Something Wrong ${error}`);
@@ -99,4 +107,4 @@ class UserStore {
   }
 }
 
-module.exports = UserStore;
+module.exports = DoctorStore;
