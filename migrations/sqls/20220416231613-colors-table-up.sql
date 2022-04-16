@@ -1,0 +1,6 @@
+CREATE TABLE colors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    image VARCHAR,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);
