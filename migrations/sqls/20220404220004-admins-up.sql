@@ -7,3 +7,5 @@ CREATE TABLE admins (
     image VARCHAR(255),
     create_at TIMESTAMP DEFAULT Now()
 );
+
+INSERT INTO admins (role,username,email,password) VALUES ('admin','admin','admin@levi.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e')

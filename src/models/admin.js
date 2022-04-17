@@ -96,13 +96,15 @@ class AdminStore {
       // await conn.query(sql2, [Date.now(), username]);
       if (result.rows.length) {
         const admin = result.rows[0];
+        console.log(admin)
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, admin.password))
           return admin;
+        else throw new Error("password is not correct");
       }
+      throw new Error("username not found");
     } catch (error) {
       throw new Error(`Something Wrong ${error}`);
     }
-    return null;
   }
 }
 
