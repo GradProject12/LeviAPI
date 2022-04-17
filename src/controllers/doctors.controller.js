@@ -1,25 +1,26 @@
 const DoctorStore = require("../models/doctor");
 const jwt = require("jsonwebtoken");
+const { successRes, errorRes } = require("../services/response");
 
 const store = new DoctorStore();
 
 const index = async (_req, res) => {
   try {
     const doctors = await store.index();
-    res.json(doctors);
+    res.status(200).json(successRes(200, doctors));
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(errorRes(404, error.message));
   }
 };
 
 const show = async (req, res) => {
   try {
     const doctor = await store.show(req.params.id);
-    res.json(doctor);
+    res.status(200).json(successRes(200, doctor));
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(errorRes(404, error.message));
   }
 };
 
@@ -38,10 +39,12 @@ const create = async (req, res) => {
   try {
     const newdoctor = await store.create(doctor);
     const token = jwt.sign({ doctor: newdoctor }, process.env.TOKEN_SERCRET);
-    res.json({ username: doctor.username, token: token });
+    res
+      .status(200)
+      .json(successRes(200, { username: doctor.username, token: token }));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 const update = async (req, res) => {
@@ -58,20 +61,20 @@ const update = async (req, res) => {
   };
   try {
     const doctorn = await store.update(doctor, req.params.id);
-    res.json(doctorn);
+    res.status(200).json(successRes(200, doctorn));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 
 const remove = async (req, res) => {
   try {
     const doctor = await store.delete(req.params.id);
-    res.json(doctor);
+    res.status(200).json(successRes(200, doctor));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 
@@ -85,10 +88,17 @@ const authenticate = async (req, res) => {
     const token = jwt.sign({ doctorn }, process.env.TOKEN_SERCRET, {
       expiresIn: "30m",
     });
-    res.json({ username: doctorn.username, token });
+    res.status(200).json(
+      successRes(200, {
+        username: doctorn.username,
+        role: doctorn.role,
+        token,
+      })
+    );
+
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 

@@ -1,23 +1,24 @@
 const AnimalsStore = require("../models/animal");
 const store = new AnimalsStore();
+const { successRes, errorRes } = require("../services/response");
 
 const index = async (_req, res) => {
   try {
     const animals = await store.index();
-    res.json(animals);
+    res.status(200).json(successRes(200, animals));
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(errorRes(404, error.message));
   }
 };
 
 const show = async (req, res) => {
   try {
     const animal = await store.show(req.params.id);
-    res.json(animal);
+    res.status(200).json(successRes(200, animal));
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(errorRes(404, error.message));
   }
 };
 
@@ -30,10 +31,10 @@ const create = async (req, res) => {
   };
   try {
     const newanimal = await store.create(animal);
-    res.json(newanimal);
+    res.status(200).json(successRes(200, newanimal));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 const update = async (req, res) => {
@@ -45,20 +46,20 @@ const update = async (req, res) => {
   };
   try {
     const newanimal = await store.update(animal, req.params.id);
-    res.json(newanimal);
+    res.status(200).json(successRes(200, newanimal));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 
 const remove = async (req, res) => {
   try {
     const animal = await store.delete(req.params.id);
-    res.json(animal);
+    res.status(200).json(successRes(200, animal));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 
