@@ -84,7 +84,7 @@ const authenticate = async (req, res) => {
     const token = jwt.sign({ adminn }, process.env.TOKEN_SERCRET, {
       expiresIn: "30m",
     });
-    res.status(200).json(successRes(200, { username: adminn.username, token }));
+    res.status(200).json(successRes(200, { username: adminn.username,role:adminn.role, token }));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
