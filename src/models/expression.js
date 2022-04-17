@@ -43,7 +43,7 @@ class ExpressionStore {
   async update(expression, id) {
     try {
       const sql =
-        "UPDATE expressions SET status=($1), sound=($2) where id=($3) RETURNING * ";
+        "UPDATE expressions SET status=COALESCE($1,status), sound=COALESCE($2,sound) where id=($3) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         expression.status,

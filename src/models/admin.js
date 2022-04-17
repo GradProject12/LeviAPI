@@ -18,7 +18,7 @@ class AdminStore {
 
   async show(id) {
     try {
-      const sql = "SELECT * FROM admins WHERE admin=($1)";
+      const sql = "SELECT * FROM admins WHERE id=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
@@ -53,7 +53,7 @@ class AdminStore {
   async update(admin, id) {
     try {
       const sql =
-        "UPDATE admins SET role=($1), username=($2), email=($3), password=($4), image=($5) where admin=($6) RETURNING * ";
+        "UPDATE admins SET role=COALESCE($1,role), username=COALESCE($2,username), email=COALESCE($3,email), password=COALESCE($4,password), image=COALESCE($5,image) where id=($6) RETURNING * ";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
         admin.password + BCRYPT_PASSWORD,

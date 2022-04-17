@@ -57,7 +57,7 @@ class DoctorStore {
   async update(doctor, id) {
     try {
       const sql =
-        "UPDATE doctors SET full_name($1), email=($2), phone=($3), password=($4), image=($5), clinic_location=($6), start_time=($7), end_time=($8), days_of_week=($9) where id=($10) RETURNING * ";
+        "UPDATE doctors SET full_name=COALESCE($1,full_name), email=COALESCE($2,email), phone=COALESCE($3,phone), password=COALESCE($4,password), image=COALESCE($5,image), clinic_location=COALESCE($6,clinic_location), start_time=COALESCE($7,start_time), end_time=COALESCE($8,end_time), days_of_week=COALESCE($9,days_of_week) where id=($10) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         doctor.full_name,

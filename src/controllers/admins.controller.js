@@ -1,25 +1,26 @@
 const AdminStore = require("../models/admin");
 const jwt = require("jsonwebtoken");
+const { successRes, errorRes } = require("../services/response");
 
 const store = new AdminStore();
 
 const index = async (_req, res) => {
   try {
     const admins = await store.index();
-    res.json(admins);
+    res.status(200).json(successRes(200, admins));
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(errorRes(404, error.message));
   }
 };
 
 const show = async (req, res) => {
   try {
     const admin = await store.show(req.params.id);
-    res.json(admin);
+    res.status(200).json(successRes(200, admin));
   } catch (error) {
     res.status(404);
-    res.json(error);
+    res.json(errorRes(404, error.message));
   }
 };
 
@@ -34,10 +35,16 @@ const create = async (req, res) => {
   try {
     const newAdmin = await store.create(admin);
     const token = jwt.sign({ admin: newAdmin }, process.env.TOKEN_SERCRET);
-    res.json({ username: admin.username, token: token });
+    res.status(201).json(
+      successRes(201, {
+        username: admin.username,
+        role: admin.role,
+        token: token,
+      })
+    );
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 const update = async (req, res) => {
@@ -50,20 +57,20 @@ const update = async (req, res) => {
   };
   try {
     const adminn = await store.update(admin, req.params.id);
-    res.json(adminn);
+    res.status(200).json(successRes(200, adminn));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 
 const remove = async (req, res) => {
   try {
     const admin = await store.delete(req.params.id);
-    res.json(admin);
+    res.status(200).json(successRes(200, admin));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 
@@ -77,10 +84,10 @@ const authenticate = async (req, res) => {
     const token = jwt.sign({ adminn }, process.env.TOKEN_SERCRET, {
       expiresIn: "30m",
     });
-    res.json({ username: adminn.username, token });
+    res.status(200).json(successRes(200, { username: adminn.username, token }));
   } catch (error) {
     res.status(404);
-    res.json(`${error}`);
+    res.json(errorRes(404, error.message));
   }
 };
 

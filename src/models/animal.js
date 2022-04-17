@@ -45,7 +45,7 @@ class AnimalStore {
   async update(animal, id) {
     try {
       const sql =
-        "UPDATE animals SET name=($1), picture=($2), sound=($3), spelled=($4) where id=($5) RETURNING * ";
+        "UPDATE animals SET name=COALESCE($1,name), picture=COALESCE($2,picture), sound=COALESCE($3,sound), spelled=COALESCE($4,spelled) where id=($5) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         animal.name,

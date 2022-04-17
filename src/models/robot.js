@@ -46,7 +46,7 @@ class RobotStore {
   async update(robot, id) {
     try {
       const sql =
-        "UPDATE robots SET parent_id($1), doctor_id=($2) where id=($3) RETURNING * ";
+        "UPDATE robots SET parent_id=COALESCE($1,parent_id), doctor_id=COALESCE($2,doctor_id) where id=($3) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         robot.parent_id,

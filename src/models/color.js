@@ -39,7 +39,7 @@ class ColorStore {
   async update(color, id) {
     try {
       const sql =
-        "UPDATE colors SET name=($1), image=($2) where id=($3) RETURNING * ";
+        "UPDATE colors SET name=COALESCE($1,name), image=COALESCE($2,image) where id=($3) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         color.name,

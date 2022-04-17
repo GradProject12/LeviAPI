@@ -54,7 +54,7 @@ class ParentStore {
   async update(parent, id) {
     try {
       const sql =
-        "UPDATE parents SET full_name($1), email=($2), phone=($3), password=($4), image=($5), doctor_id=($6) where id=($7) RETURNING * ";
+        "UPDATE parents SET full_name=COALESCE($1,full_name), email=COALESCE($2,email), phone=COALESCE($3,phone), password=COALESCE($4,password), image=COALESCE($5,image), doctor_id=COALESCE($6,doctor_id) where id=($7) RETURNING * ";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
         parent.password + BCRYPT_PASSWORD,
