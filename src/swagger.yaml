@@ -1,0 +1,629 @@
+swagger: '2.0'
+info:
+  description: Documentation for Levi API
+  version: 1.0.0
+  title: Levi API
+host: localhost:3000
+basePath: /api
+tags:
+  - name: admins
+    description: Admin Controller
+  - name: animals
+    description: animals Controller
+  - name: colors
+    description: colors Controller
+  - name: doctors
+    description: doctors Controller
+  - name: expressions
+    description: expressions Controller
+  - name: parents
+    description: parents Controller
+  - name: robots
+    description: robots Controller
+ 
+paths:
+  /admins:
+    get:
+      tags:
+        - admins
+      summary: getAll
+      operationId: getAllUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: accountNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: accountNonLocked
+          in: query
+          required: false
+          type: boolean
+        - name: authorities[0].authority
+          in: query
+          required: false
+          type: string
+        - name: credentialsNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: enabled
+          in: query
+          required: false
+          type: boolean
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+        - name: password
+          in: query
+          required: false
+          type: string
+        - name: sort_by
+          in: query
+          description: sort_by
+          required: false
+          type: string
+          default: id
+          enum:
+            - id
+            - price
+            - createdDate
+            - modifiedDate
+        - name: sort_dir
+          in: query
+          description: sort_dir
+          required: false
+          type: string
+          default: asc
+          enum:
+            - asc
+            - desc
+        - name: username
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TransactionDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - admins
+      summary: addTransaction
+      operationId: addTransactionUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: accountNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: accountNonLocked
+          in: query
+          required: false
+          type: boolean
+        - name: authorities[0].authority
+          in: query
+          required: false
+          type: string
+        - name: credentialsNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: enabled
+          in: query
+          required: false
+          type: boolean
+        - name: password
+          in: query
+          required: false
+          type: string
+        - in: body
+          name: transactionDto
+          description: transactionDto
+          required: true
+          schema:
+            $ref: '#/definitions/TransactionDto'
+        - name: username
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TransactionDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/v1/transaction/balance:
+    get:
+      tags:
+        - admins
+      summary: getUserBalance
+      operationId: getUserBalanceUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: accountNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: accountNonLocked
+          in: query
+          required: false
+          type: boolean
+        - name: authorities[0].authority
+          in: query
+          required: false
+          type: string
+        - name: credentialsNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: enabled
+          in: query
+          required: false
+          type: boolean
+        - name: password
+          in: query
+          required: false
+          type: string
+        - name: username
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /admins/{id}:
+    get:
+      tags:
+        - admins
+      summary: getTransaction
+      operationId: getTransactionUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: accountNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: accountNonLocked
+          in: query
+          required: false
+          type: boolean
+        - name: authorities[0].authority
+          in: query
+          required: false
+          type: string
+        - name: credentialsNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: enabled
+          in: query
+          required: false
+          type: boolean
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+        - name: password
+          in: query
+          required: false
+          type: string
+        - name: username
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TransactionDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - admins
+      summary: updateTransaction
+      operationId: updateTransactionUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: accountNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: accountNonLocked
+          in: query
+          required: false
+          type: boolean
+        - name: authorities[0].authority
+          in: query
+          required: false
+          type: string
+        - name: credentialsNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: enabled
+          in: query
+          required: false
+          type: boolean
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+        - name: password
+          in: query
+          required: false
+          type: string
+        - in: body
+          name: transactionDto
+          description: transactionDto
+          required: true
+          schema:
+            $ref: '#/definitions/TransactionDto'
+        - name: username
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TransactionDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - admins
+      summary: deleteTransaction
+      operationId: deleteTransactionUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: accountNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: accountNonLocked
+          in: query
+          required: false
+          type: boolean
+        - name: authorities[0].authority
+          in: query
+          required: false
+          type: string
+        - name: credentialsNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: enabled
+          in: query
+          required: false
+          type: boolean
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+        - name: password
+          in: query
+          required: false
+          type: string
+        - name: username
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /auth/login:
+    post:
+      tags:
+        - auth-controller
+      summary: signIn
+      operationId: signInUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: loginDto
+          description: loginDto
+          required: true
+          schema:
+            $ref: '#/definitions/LoginDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseEntity'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /auth/me:
+    get:
+      tags:
+        - auth-controller
+      summary: currentUser
+      operationId: currentUserUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: accountNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: accountNonLocked
+          in: query
+          required: false
+          type: boolean
+        - name: authorities[0].authority
+          in: query
+          required: false
+          type: string
+        - name: credentialsNonExpired
+          in: query
+          required: false
+          type: boolean
+        - name: enabled
+          in: query
+          required: false
+          type: boolean
+        - name: password
+          in: query
+          required: false
+          type: string
+        - name: username
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseEntity'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+definitions:
+  LoginDto:
+    type: object
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    title: LoginDto
+  ResponseEntity:
+    type: object
+    properties:
+      body:
+        type: object
+      statusCode:
+        type: string
+        enum:
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
+      statusCodeValue:
+        type: integer
+        format: int32
+    title: ResponseEntity
+  SignUpDto:
+    type: object
+    properties:
+      created_date:
+        type: string
+        format: date-time
+      email:
+        type: string
+      family_name:
+        type: string
+      id:
+        type: integer
+        format: int64
+      modified_date:
+        type: string
+        format: date-time
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    title: SignUpDto
+  TransactionDto:
+    type: object
+    properties:
+      account_number:
+        type: string
+      calculate_in_monthly:
+        type: boolean
+      created_date:
+        type: string
+        format: date-time
+      description:
+        type: string
+      destination:
+        type: string
+      id:
+        type: integer
+        format: int64
+      is_income:
+        type: boolean
+      modified_date:
+        type: string
+        format: date-time
+      price:
+        type: integer
+        format: int64
+      source:
+        type: string
+    title: TransactionDto
+  Admins:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      password:
+        type: string
+      image:
+        type: string
+      id:
+        type: integer
+        format: int64
+      role:
+        type: string
+    title: Admins
