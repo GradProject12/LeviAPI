@@ -34,6 +34,17 @@ const create = async (req, res) => {
     doctor_id: req.body.doctor_id,
   };
   try {
+    if (!parent.email) throw new Error("email address is missing");
+    if (!parent.full_name) throw new Error("full name is missing");
+    if (!parent.password) throw new Error("password is missing");
+
+    if (!validator.isEmail(parent.email))
+      throw new Error("email address is not valid ");
+    if (parent.password.length < 8)
+      throw new Error("password must be at least 8 characters ");
+    if (parent.image && !validator.isURL(parent.image, []))
+      throw new Error("image path is not valid");
+    
     const newParent = await store.create(parent);
     const token = jwt.sign({ parent: newParent }, process.env.TOKEN_SERCRET);
     res
@@ -54,6 +65,13 @@ const update = async (req, res) => {
     doctor_id: req.body.doctor_id,
   };
   try {
+    if (parent.email && !validator.isEmail(parent.email))
+      throw new Error("email address is not valid ");
+    if (parent.password && parent.password.length < 8)
+      throw new Error("password must be at least 8 characters ");
+    if (parent.image && !validator.isURL(parent.image, []))
+      throw new Error("image path is not valid");
+
     const parent2 = await store.update(parent, req.params.id);
     res.status(200).json(successRes(200, parent2));
   } catch (error) {

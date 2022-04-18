@@ -1,4 +1,5 @@
 const client = require("../database");
+const { stringBetweenParentheses } = require("../services/helpers");
 
 class ColorStore {
   async index() {
@@ -9,7 +10,7 @@ class ColorStore {
       conn.release();
       return result.rows;
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      throw new Error(error.message);
     }
   }
 
@@ -19,9 +20,11 @@ class ColorStore {
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
-      return result.rows[0];
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("color is not found");
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
     }
   }
   async create(color) {
@@ -32,7 +35,13 @@ class ColorStore {
       conn.release();
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "23505")
+        throw new Error(
+          `${stringBetweenParentheses(error.detail)} already exists`
+        );
+      if (error.code === "23502") throw new Error(`${error.column} is null`);
+
+      throw new Error(error.message);
     }
   }
 
@@ -41,15 +50,20 @@ class ColorStore {
       const sql =
         "UPDATE colors SET name=COALESCE($1,name), image=COALESCE($2,image) where id=($3) RETURNING * ";
       const conn = await client.connect();
-      const result = await conn.query(sql, [
-        color.name,
-        color.image,
-        id,
-      ]);
+      const result = await conn.query(sql, [color.name, color.image, id]);
       conn.release();
-      return result.rows[0];
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("color is not found");
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+
+      if (error.code === "23505")
+        throw new Error(
+          `${stringBetweenParentheses(error.detail)} already exists`
+        );
+      if (error.code === "23502") throw new Error(`${error.column} is null`);
+
+      throw new Error(error.message);
     }
   }
   async delete(id) {
@@ -58,9 +72,11 @@ class ColorStore {
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
-      return result.rows[0];
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("color is not found");
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
     }
   }
 }

@@ -1,6 +1,7 @@
 const DoctorStore = require("../models/doctor");
 const jwt = require("jsonwebtoken");
 const { successRes, errorRes } = require("../services/response");
+var validator = require("validator");
 
 const store = new DoctorStore();
 
@@ -37,6 +38,39 @@ const create = async (req, res) => {
     days_of_week: req.body.days_of_week,
   };
   try {
+    if (!doctor.email) throw new Error("email address is missing");
+
+    if (!doctor.full_name) throw new Error("full name is missing");
+
+    if (!doctor.password) throw new Error("password is missing");
+
+    if (
+      doctor.start_time &&
+      !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.start_time)
+    )
+      throw new Error("start time is not valid time");
+
+    if (
+      doctor.end_time &&
+      !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.end_time)
+    )
+      throw new Error("end time is not valid time");
+
+    if (!validator.isEmail(doctor.email))
+      throw new Error("email address is not valid ");
+
+    if (doctor.password.length < 8)
+      throw new Error("password must be at least 8 characters ");
+
+    if (doctor.image && !validator.isURL(doctor.image, []))
+      throw new Error("image path is not valid");
+
+    if (
+      doctor.phone &&
+      !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
+    )
+      throw new Error("phone number is not valid");
+
     const newdoctor = await store.create(doctor);
     const token = jwt.sign({ doctor: newdoctor }, process.env.TOKEN_SERCRET);
     res
@@ -60,6 +94,24 @@ const update = async (req, res) => {
     days_of_week: req.body.days_of_week,
   };
   try {
+    if (doctor.email && !validator.isEmail(doctor.email))
+      throw new Error("email address is not valid ");
+    if (doctor.password && doctor.password.length < 8)
+      throw new Error("password must be at least 8 characters ");
+    if (doctor.image && !validator.isURL(doctor.image, []))
+      throw new Error("image path is not valid");
+    if (
+      doctor.phone &&
+      !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
+    )
+      throw new Error("phone number is not valid");
+
+      if (doctor.start_time && !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.start_time))
+      throw new Error("start time is not valid time");
+
+    if (doctor.end_time && !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.end_time))
+      throw new Error("end time is not valid time");
+
     const doctorn = await store.update(doctor, req.params.id);
     res.status(200).json(successRes(200, doctorn));
   } catch (error) {
@@ -95,7 +147,6 @@ const authenticate = async (req, res) => {
         token,
       })
     );
-
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));

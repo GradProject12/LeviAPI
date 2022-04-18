@@ -1,6 +1,7 @@
 const AnimalsStore = require("../models/animal");
 const store = new AnimalsStore();
 const { successRes, errorRes } = require("../services/response");
+var validator = require("validator");
 
 const index = async (_req, res) => {
   try {
@@ -30,6 +31,7 @@ const create = async (req, res) => {
     spelled: req.body.spelled,
   };
   try {
+    if (!animal.name) throw new Error("name is missing");
     const newanimal = await store.create(animal);
     res.status(200).json(successRes(200, newanimal));
   } catch (error) {
@@ -62,7 +64,6 @@ const remove = async (req, res) => {
     res.json(errorRes(404, error.message));
   }
 };
-
 
 module.exports = {
   index,

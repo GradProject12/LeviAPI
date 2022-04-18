@@ -6,8 +6,8 @@ CREATE TABLE doctors (
     password VARCHAR NOT NULL,
     image VARCHAR,
     clinic_location VARCHAR,
-    start_time TIMESTAMP,
-    end_time TIMESTAMP,
-    days_of_week TIMESTAMP,
+    start_time TIME,
+    end_time TIME,
+    days_of_week VARCHAR[],
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

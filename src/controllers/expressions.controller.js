@@ -29,6 +29,10 @@ const create = async (req, res) => {
     sound: req.body.sound,
   };
   try {
+    if (!expression.sound) throw new Error("sound address is missing");
+    if (!expression.status) throw new Error("status is missing");
+
+
     const newExpression = await store.create(expression);
     res.status(200).json(successRes(200, newExpression));
   } catch (error) {
@@ -42,6 +46,7 @@ const update = async (req, res) => {
     sound: req.body.sound,
   };
   try {
+    if (!expression.sound || !expression.status ) throw new Error("update faild! no data is provided");
     const newExpression = await store.update(expression, req.params.id);
     res.status(200).json(successRes(200, newExpression));
   } catch (error) {

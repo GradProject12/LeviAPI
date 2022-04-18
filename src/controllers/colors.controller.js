@@ -1,6 +1,7 @@
 const ColorStore = require("../models/color");
 const store = new ColorStore();
 const { successRes, errorRes } = require("../services/response");
+var validator = require("validator");
 
 const index = async (_req, res) => {
   try {
@@ -28,6 +29,7 @@ const create = async (req, res) => {
     image: req.body.image,
   };
   try {
+    if (!color.name) throw new Error("name is missing");
     const newcolor = await store.create(color);
     res.status(200).json(successRes(200, newcolor));
   } catch (error) {

@@ -1,5 +1,6 @@
 const client = require("../database");
 const bcrypt = require("bcrypt");
+const { stringBetweenParentheses } = require("../services/helpers");
 
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 
@@ -12,7 +13,7 @@ class AdminStore {
       conn.release();
       return result.rows;
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      throw new Error(error.message);
     }
   }
 
@@ -22,11 +23,14 @@ class AdminStore {
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
-      return result.rows[0];
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("admin is not found");
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
     }
   }
+
   async create(admin) {
     try {
       const sql =
@@ -46,7 +50,13 @@ class AdminStore {
       conn.release();
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "23505")
+        throw new Error(
+          `${stringBetweenParentheses(error.detail)} already exists`
+        );
+      if (error.code === "23502") throw new Error(`${error.column} is null`);
+
+      throw new Error(error.message);
     }
   }
 
@@ -68,9 +78,16 @@ class AdminStore {
         id,
       ]);
       conn.release();
-      return result.rows[0];
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("admin is not found");
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "23505")
+        throw new Error(
+          `${stringBetweenParentheses(error.detail)} already exists`
+        );
+      if (error.code === "23502") throw new Error(`${error.column} is null`);
+      throw new Error(error.message);
     }
   }
   async delete(id) {
@@ -79,9 +96,11 @@ class AdminStore {
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
-      return result.rows[0];
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("admin is not found");
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
     }
   }
 
@@ -96,14 +115,14 @@ class AdminStore {
       // await conn.query(sql2, [Date.now(), username]);
       if (result.rows.length) {
         const admin = result.rows[0];
-        console.log(admin)
+        console.log(admin);
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, admin.password))
           return admin;
         else throw new Error("password is not correct");
       }
       throw new Error("username not found");
     } catch (error) {
-      throw new Error(`Something Wrong ${error}`);
+      throw new Error(error.message);
     }
   }
 }
