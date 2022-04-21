@@ -8,7 +8,8 @@ router.get("/", verifyAuthToken, parentController.index);
 router.get("/:id", verifyAuthToken, parentController.show);
 router.put("/:id", verifyAuthToken, parentController.update);
 router.delete("/:id", verifyAuthToken, parentController.remove);
-router.post("/", verifyAuthToken,parentController.create);
-router.post("/auth", parentController.authenticate);
+router.post("/signup", verifyAuthToken,parentController.create);
+router.post("/login", parentController.login);
+router.post("/verify", parentController.verify);
 
 module.exports = router;

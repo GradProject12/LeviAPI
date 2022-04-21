@@ -10,7 +10,8 @@ const store = new DoctorStore();
 const index = async (_req, res) => {
   try {
     const doctors = await store.index();
-    if(!doctors) return res.status(204).json(successRes(204, [],"Nothing exits"));
+    if (!doctors.length)
+      return res.status(200).json(successRes(200, [], "Nothing exits"));
     res.status(200).json(successRes(200, doctors));
   } catch (error) {
     res.status(404);
@@ -89,11 +90,18 @@ const create = async (req, res) => {
       "Signup Verification",
       `Your Verification Code is ${otp}
     Please note that it will expire in 5 mins.
-    `
+    `,
+      doctor.email
     );
     res
       .status(201)
-      .json(successRes(201, { username: doctor.username, token: token },"Account created successfully"));
+      .json(
+        successRes(
+          201,
+          { username: doctor.username, token: token },
+          "Verification code is sent to your email"
+        )
+      );
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -168,7 +176,9 @@ const update = async (req, res) => {
       throw new Error("end time is not valid time");
 
     const doctorn = await store.update(doctor, req.params.id);
-    res.status(200).json(successRes(200, doctorn,"Account is updated successfully"));
+    res
+      .status(200)
+      .json(successRes(200, doctorn, "Account is updated successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -177,8 +187,10 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const doctor = await store.delete(req.params.id);
-    res.status(200).json(successRes(200, [],"Account is removed successfully"));
+    await store.delete(req.params.id);
+    res
+      .status(200)
+      .json(successRes(200, [], "Account is removed successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -192,17 +204,23 @@ const login = async (req, res) => {
   };
   try {
     const loggedDoctor = await store.login(doctor.email, doctor.password);
-    console.log(loggedDoctor)
-    if(!loggedDoctor.verified) return res.status(200).json(successRes(200, [],"Account is not verified"));
+    if (!loggedDoctor.verified)
+      return res
+        .status(200)
+        .json(successRes(200, [], "Account is not verified"));
     const token = jwt.sign({ loggedDoctor }, process.env.TOKEN_SERCRET, {
       expiresIn: "30m",
     });
     res.status(200).json(
-      successRes(200, {
-        username: loggedDoctor.username,
-        role: loggedDoctor.role,
-        token,
-      },"Logged in successfully")
+      successRes(
+        200,
+        {
+          email: loggedDoctor.email,
+          role: loggedDoctor.role,
+          token,
+        },
+        "Logged in successfully"
+      )
     );
   } catch (error) {
     res.status(404);

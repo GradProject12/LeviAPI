@@ -8,7 +8,7 @@ CREATE TABLE doctors (
     end_time TIME,
     days_of_week VARCHAR[],
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (doctor_id) REFERENCES users (user_id)
+    FOREIGN KEY (doctor_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
-INSERT INTO doctors (doctor_id,national_id) VALUES (1,1321232112);
+INSERT INTO doctors (doctor_id,national_id) VALUES (500,1321232112);

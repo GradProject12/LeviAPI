@@ -108,10 +108,14 @@ class DoctorStore {
       const updateDoctor =
         "UPDATE doctors SET clinic_location=COALESCE($1,clinic_location), start_time=COALESCE($2,start_time), end_time=COALESCE($3,end_time), days_of_week=COALESCE($4,days_of_week) where doctor_id=($5) RETURNING * ";
       const conn = await client.connect();
+      const hash = bcrypt.hashSync(
+        doctor.password + BCRYPT_PASSWORD,
+        parseInt(SALT_ROUNDS)
+      );
       const result1 = await conn.query(updateUser, [
         doctor.email,
         doctor.phone,
-        doctor.password,
+        hash,
         doctor.profile_image,
         id,
       ]);
@@ -141,7 +145,7 @@ class DoctorStore {
   }
   async delete(id) {
     try {
-      const sql = "DELETE FROM users WHERE email=($1) RETURNING * ";
+      const sql = "DELETE FROM doctors WHERE doctor_id=($1) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
@@ -163,8 +167,7 @@ class DoctorStore {
         const doctor = result.rows[0];
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, doctor.password))
           return doctor;
-      }
-      throw new Error("email is not found");
+      } else throw new Error("email is not found");
     } catch (error) {
       throw new Error(error.message);
     }

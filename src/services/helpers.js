@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-function sendMail(subject,body) {
+function sendMail(subject,body,to) {
   let transporter = nodemailer.createTransport({
     host: "smtp.mail.yahoo.com",
     port: 465,
@@ -14,7 +14,7 @@ function sendMail(subject,body) {
 
   message = {
     from: process.env.EMAIL,
-    to: "muuhab98@gmail.com",
+    to: to,
     subject: subject,
     text: body,
   };

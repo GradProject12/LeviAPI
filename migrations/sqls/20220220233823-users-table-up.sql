@@ -11,5 +11,5 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (user_id,full_name, email, password, role,verified) VALUES (1,'mohab','mu@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','doctor',false) ,
-(2,'mohab','muu@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','parent',false);
+INSERT INTO users (user_id,full_name, email, password, role,verified) VALUES (500,'mohab','mu@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','doctor',true) ,
+(700,'mohab','muu@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','parent',true);
