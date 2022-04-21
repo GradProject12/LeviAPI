@@ -11,5 +11,6 @@ router.delete("/:id", verifyAuthToken, parentController.remove);
 router.post("/signup", verifyAuthToken,parentController.create);
 router.post("/login", parentController.login);
 router.post("/verify", parentController.verify);
+router.post("/send-code", parentController.sendCode);
 
 module.exports = router;

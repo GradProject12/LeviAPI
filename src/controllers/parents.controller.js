@@ -72,7 +72,7 @@ const create = async (req, res) => {
       .json(
         successRes(
           200,
-          { username: parent.username, token: token },
+          { email: parent.email, token: token },
           "Verification code is sent to your email"
         )
       );
@@ -182,6 +182,45 @@ const login = async (req, res) => {
   }
 };
 
+const sendCode = async (req, res) => {
+  const parent = {
+    email: req.body.email,
+  };
+  try {
+    if (!parent.email) throw new Error("email address is missing");
+
+    if (!validator.isEmail(parent.email))
+      throw new Error("email address is not valid ");
+
+    const newParent = await store.verifyData(parent.email);
+    const otp = speakeasy.totp({
+      secret: newParent.secret,
+      digits: 5,
+      encoding: "base32",
+      step: 300,
+    });
+    sendMail(
+      "Signup Verification",
+      `Your Verification Code is ${otp}
+    Please note that it will expire in 5 mins.
+    `,
+      parent.email
+    );
+    res
+      .status(200)
+      .json(
+        successRes(
+          200,
+          { email: parent.email, token: token },
+          "Verification code is sent to your email"
+        )
+      );
+  } catch (error) {
+    res.status(404);
+    res.json(errorRes(404, error.message));
+  }
+};
+
 module.exports = {
   index,
   show,
@@ -190,4 +229,5 @@ module.exports = {
   remove,
   login,
   verify,
+  sendCode
 };

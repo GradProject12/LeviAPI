@@ -11,5 +11,6 @@ router.delete("/:id", verifyAuthToken, doctorController.remove);
 router.post("/signup", verifyAuthToken,doctorController.create);
 router.post("/login", doctorController.login);
 router.post("/verify", doctorController.verify);
+router.post("/send-code", doctorController.sendCode);
 
 module.exports = router;

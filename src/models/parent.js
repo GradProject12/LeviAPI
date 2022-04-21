@@ -99,8 +99,8 @@ class ParentStore {
     try {
       const updateUser =
         "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), password=COALESCE($3,password), profile_image=COALESCE($4,profile_image) WHERE user_id=($5) RETURNING *";
-      const updateDoctor =
-        "UPDATE parents SET doctor_id=COALESCE($1,doctor_id) where doctor_id=($2) RETURNING * ";
+      const updateParent =
+        "UPDATE parents SET doctor_id=COALESCE($1,doctor_id) where parent_id=($2) RETURNING * ";
 
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
@@ -114,7 +114,7 @@ class ParentStore {
         parent.profile_image,
         id,
       ]);
-      const result2 = await conn.query(updateDoctor, [parent.doctor_id, id]);
+      const result2 = await conn.query(updateParent, [parent.doctor_id, id]);
       conn.release();
       const { user_id, ...rest } = result1.rows[0];
 
@@ -156,7 +156,7 @@ class ParentStore {
       if (result.rows.length) {
         const parent = result.rows[0];
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, parent.password))
-          return doctor;
+          return parent;
       } else throw new Error("email is not found");
     } catch (error) {
       throw new Error(error.message);
