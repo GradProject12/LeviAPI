@@ -257,7 +257,7 @@ const sendCode = async (req, res) => {
       .json(
         successRes(
           200,
-          { email: doctor.email, token: token },
+          [],
           "Token is sent to your email"
         )
       );
