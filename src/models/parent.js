@@ -100,7 +100,7 @@ class ParentStore {
       const updateUser =
         "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), password=COALESCE($3,password), profile_image=COALESCE($4,profile_image) WHERE user_id=($5) RETURNING *";
       const updateDoctor =
-        "UPDATE parents SET doctor_id=COALESCE($1,doctor_id) where doctor_id=($5) RETURNING * ";
+        "UPDATE parents SET doctor_id=COALESCE($1,doctor_id) where doctor_id=($2) RETURNING * ";
 
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
@@ -108,7 +108,6 @@ class ParentStore {
         parseInt(SALT_ROUNDS)
       );
       const result1 = await conn.query(updateUser, [
-        parent.full_name,
         parent.email,
         parent.phone,
         hash,

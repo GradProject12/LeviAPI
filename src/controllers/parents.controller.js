@@ -129,7 +129,6 @@ const update = async (req, res) => {
       throw new Error("password must be at least 8 characters ");
     if (parent.profile_image && !validator.isURL(parent.profile_image, []))
       throw new Error("image path is not valid");
-
     const parent2 = await store.update(parent, req.params.id);
     res
       .status(200)
