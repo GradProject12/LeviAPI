@@ -81,7 +81,7 @@ class DoctorStore {
       const result = await conn.query(sql, [email]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("Wrong email entered");
+      else throw new Error("email address is not valid");
     } catch (error) {
       throw new Error(error.message);
     }
@@ -95,7 +95,7 @@ class DoctorStore {
       const result = await conn.query(sql, [true, email]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("Wrong email entered");
+      else throw new Error("email address is not valid");
     } catch (error) {
       throw new Error(error.message);
     }
