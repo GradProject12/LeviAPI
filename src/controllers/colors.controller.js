@@ -1,7 +1,6 @@
 const ColorStore = require("../models/color");
 const store = new ColorStore();
 const { successRes, errorRes } = require("../services/response");
-var validator = require("validator");
 
 const index = async (_req, res) => {
   try {

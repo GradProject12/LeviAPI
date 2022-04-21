@@ -1,6 +1,7 @@
 const ParentStore = require("../models/parent");
 const jwt = require("jsonwebtoken");
 const { successRes, errorRes } = require("../services/response");
+const validator = require("validator");
 
 const store = new ParentStore();
 

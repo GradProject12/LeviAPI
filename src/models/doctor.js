@@ -7,7 +7,8 @@ const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 class DoctorStore {
   async index() {
     try {
-      const sql = "SELECT * FROM doctors";
+      const sql =
+        "SELECT * FROM users JOIN doctors on users.user_id=doctors.doctor_id";
       const conn = await client.connect();
       const result = await conn.query(sql);
       conn.release();
@@ -19,7 +20,8 @@ class DoctorStore {
 
   async show(id) {
     try {
-      const sql = "SELECT * FROM doctors WHERE id=($1)";
+      const sql =
+        "SELECT * FROM (SELECT * FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE user_id=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
@@ -32,23 +34,32 @@ class DoctorStore {
   }
   async create(doctor) {
     try {
+      const addToUsers =
+        "INSERT INTO users (full_name, email, phone, password, profile_image, role, secret) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *";
       const sql =
-        "INSERT INTO doctors(full_name, email, phone, password, image, clinic_location, start_time, end_time, days_of_week) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *";
+        "INSERT INTO doctors(doctor_id, clinic_location, start_time, end_time, days_of_week,national_id) VALUES($1,$2,$3,$4,$5,$6) RETURNING *";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
         doctor.password + BCRYPT_PASSWORD,
         parseInt(SALT_ROUNDS)
       );
-      const result = await conn.query(sql, [
+      const user = await conn.query(addToUsers, [
         doctor.full_name,
         doctor.email,
         doctor.phone,
         hash,
-        doctor.image,
+        doctor.profile_image,
+        "doctor",
+        doctor.secret,
+      ]);
+      const newUser = user.rows[0];
+      const result = await conn.query(sql, [
+        newUser.user_id,
         doctor.clinic_location,
         doctor.start_time,
         doctor.end_time,
         doctor.days_of_week,
+        doctor.national_id,
       ]);
       conn.release();
       return result.rows[0];
@@ -63,17 +74,48 @@ class DoctorStore {
     }
   }
 
-  async update(doctor, id) {
+  async verifyData(email) {
+    try {
+      const sql = "SELECT secret,verified FROM users WHERE email=($1)";
+      const conn = await client.connect();
+      const result = await conn.query(sql, [email]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("Wrong email entered");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async setVerified(email) {
     try {
       const sql =
-        "UPDATE doctors SET full_name=COALESCE($1,full_name), email=COALESCE($2,email), phone=COALESCE($3,phone), password=COALESCE($4,password), image=COALESCE($5,image), clinic_location=COALESCE($6,clinic_location), start_time=COALESCE($7,start_time), end_time=COALESCE($8,end_time), days_of_week=COALESCE($9,days_of_week) where id=($10) RETURNING * ";
+        "UPDATE users SET verified=($1) WHERE email=($2) RETURNING * ";
       const conn = await client.connect();
-      const result = await conn.query(sql, [
-        doctor.full_name,
+      const result = await conn.query(sql, [true, email]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("Wrong email entered");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async update(doctor, id) {
+    try {
+      const updateUser =
+        "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), password=COALESCE($3,password), profile_image=COALESCE($4,profile_image) WHERE user_id=($5) RETURNING *";
+      const updateDoctor =
+        "UPDATE doctors SET clinic_location=COALESCE($1,clinic_location), start_time=COALESCE($2,start_time), end_time=COALESCE($3,end_time), days_of_week=COALESCE($4,days_of_week) where doctor_id=($5) RETURNING * ";
+      const conn = await client.connect();
+      const result1 = await conn.query(updateUser, [
         doctor.email,
         doctor.phone,
         doctor.password,
-        doctor.image,
+        doctor.profile_image,
+        id,
+      ]);
+      const result2 = await conn.query(updateDoctor, [
         doctor.clinic_location,
         doctor.start_time,
         doctor.end_time,
@@ -81,7 +123,9 @@ class DoctorStore {
         id,
       ]);
       conn.release();
-      if (result.rows.length) return result.rows[0];
+      const { user_id, ...rest } = result1.rows[0];
+      if (result1.rows.length && result2.rows.length)
+        return { doctor_id: user_id, ...rest, ...result2.rows[0] };
       else throw new Error("doctor is not found");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
@@ -97,7 +141,7 @@ class DoctorStore {
   }
   async delete(id) {
     try {
-      const sql = "DELETE FROM doctors WHERE id=($1) RETURNING * ";
+      const sql = "DELETE FROM users WHERE email=($1) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
@@ -109,21 +153,21 @@ class DoctorStore {
     }
   }
 
-  async authenticate(username, password) {
+  async login(email, password) {
     try {
-      const sql = "SELECT * FROM doctors WHERE username=($1)";
+      const sql = "SELECT * FROM users WHERE email=($1)";
       const conn = await client.connect();
-      const result = await conn.query(sql, [username]);
+      const result = await conn.query(sql, [email]);
       conn.release();
       if (result.rows.length) {
         const doctor = result.rows[0];
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, doctor.password))
           return doctor;
       }
+      throw new Error("email is not found");
     } catch (error) {
       throw new Error(error.message);
     }
-    return null;
   }
 }
 

@@ -1,6 +1,6 @@
 const AdminStore = require("../models/admin");
 const jwt = require("jsonwebtoken");
-var validator = require("validator");
+const validator = require("validator");
 const { successRes, errorRes } = require("../services/response");
 
 const store = new AdminStore();

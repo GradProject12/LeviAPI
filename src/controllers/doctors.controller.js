@@ -1,13 +1,16 @@
 const DoctorStore = require("../models/doctor");
 const jwt = require("jsonwebtoken");
 const { successRes, errorRes } = require("../services/response");
-var validator = require("validator");
+const validator = require("validator");
+const speakeasy = require("speakeasy");
+const { sendMail } = require("../services/helpers");
 
 const store = new DoctorStore();
 
 const index = async (_req, res) => {
   try {
     const doctors = await store.index();
+    if(!doctors) return res.status(204).json(successRes(204, [],"Nothing exits"));
     res.status(200).json(successRes(200, doctors));
   } catch (error) {
     res.status(404);
@@ -26,16 +29,19 @@ const show = async (req, res) => {
 };
 
 const create = async (req, res) => {
+  const secret = speakeasy.generateSecret().base32;
   const doctor = {
     full_name: req.body.full_name,
     email: req.body.email,
     phone: req.body.phone,
     password: req.body.password,
-    image: req.body.image,
+    profile_image: req.body.profile_image,
+    secret: secret,
     clinic_location: req.body.clinic_location,
     start_time: req.body.start_time,
     end_time: req.body.end_time,
     days_of_week: req.body.days_of_week,
+    national_id: req.body.national_id,
   };
   try {
     if (!doctor.email) throw new Error("email address is missing");
@@ -62,7 +68,7 @@ const create = async (req, res) => {
     if (doctor.password.length < 8)
       throw new Error("password must be at least 8 characters ");
 
-    if (doctor.image && !validator.isURL(doctor.image, []))
+    if (doctor.profile_image && !validator.isURL(doctor.profile_image, []))
       throw new Error("image path is not valid");
 
     if (
@@ -73,21 +79,64 @@ const create = async (req, res) => {
 
     const newdoctor = await store.create(doctor);
     const token = jwt.sign({ doctor: newdoctor }, process.env.TOKEN_SERCRET);
+    const otp = speakeasy.totp({
+      secret: secret,
+      digits: 5,
+      encoding: "base32",
+      step: 300,
+    });
+    sendMail(
+      "Signup Verification",
+      `Your Verification Code is ${otp}
+    Please note that it will expire in 5 mins.
+    `
+    );
     res
-      .status(200)
-      .json(successRes(200, { username: doctor.username, token: token }));
+      .status(201)
+      .json(successRes(201, { username: doctor.username, token: token },"Account created successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
   }
 };
+
+const verify = async (req, res) => {
+  const doctor = {
+    email: req.body.email,
+    otp: req.body.otp,
+  };
+
+  try {
+    const doc = await store.verifyData(doctor.email);
+    if (doc.verified)
+      return res
+        .status(200)
+        .json(successRes(200, [], "Account already verified"));
+    const verify = speakeasy.totp.verify({
+      secret: doc.secret,
+      encoding: "base32",
+      token: doctor.otp,
+      digits: 5,
+      step: 300,
+    });
+    if (verify) {
+      await store.setVerified(doctor.email);
+      res
+        .status(200)
+        .json(successRes(200, [], "Account Verified Successifully"));
+    } else res.status(200).json(successRes(200, [], "Wrong OTP"));
+  } catch (error) {
+    res.status(404);
+    res.json(errorRes(404, error.message));
+  }
+};
+
 const update = async (req, res) => {
   const doctor = {
-    full_name: req.body.full_name,
     email: req.body.email,
     phone: req.body.phone,
     password: req.body.password,
-    image: req.body.image,
+    profile_image: req.body.profile_image,
     clinic_location: req.body.clinic_location,
     start_time: req.body.start_time,
     end_time: req.body.end_time,
@@ -106,14 +155,20 @@ const update = async (req, res) => {
     )
       throw new Error("phone number is not valid");
 
-      if (doctor.start_time && !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.start_time))
+    if (
+      doctor.start_time &&
+      !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.start_time)
+    )
       throw new Error("start time is not valid time");
 
-    if (doctor.end_time && !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.end_time))
+    if (
+      doctor.end_time &&
+      !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.end_time)
+    )
       throw new Error("end time is not valid time");
 
     const doctorn = await store.update(doctor, req.params.id);
-    res.status(200).json(successRes(200, doctorn));
+    res.status(200).json(successRes(200, doctorn,"Account is updated successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -123,29 +178,31 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     const doctor = await store.delete(req.params.id);
-    res.status(200).json(successRes(200, doctor));
+    res.status(200).json(successRes(200, [],"Account is removed successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
   }
 };
 
-const authenticate = async (req, res) => {
+const login = async (req, res) => {
   const doctor = {
-    username: req.body.username,
+    email: req.body.email,
     password: req.body.password,
   };
   try {
-    const doctorn = await store.authenticate(doctor.username, doctor.password);
-    const token = jwt.sign({ doctorn }, process.env.TOKEN_SERCRET, {
+    const loggedDoctor = await store.login(doctor.email, doctor.password);
+    console.log(loggedDoctor)
+    if(!loggedDoctor.verified) return res.status(200).json(successRes(200, [],"Account is not verified"));
+    const token = jwt.sign({ loggedDoctor }, process.env.TOKEN_SERCRET, {
       expiresIn: "30m",
     });
     res.status(200).json(
       successRes(200, {
-        username: doctorn.username,
-        role: doctorn.role,
+        username: loggedDoctor.username,
+        role: loggedDoctor.role,
         token,
-      })
+      },"Logged in successfully")
     );
   } catch (error) {
     res.status(404);
@@ -159,5 +216,6 @@ module.exports = {
   create,
   update,
   remove,
-  authenticate,
+  login,
+  verify,
 };

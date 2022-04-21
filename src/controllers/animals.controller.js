@@ -1,7 +1,6 @@
 const AnimalsStore = require("../models/animal");
 const store = new AnimalsStore();
 const { successRes, errorRes } = require("../services/response");
-var validator = require("validator");
 
 const index = async (_req, res) => {
   try {
