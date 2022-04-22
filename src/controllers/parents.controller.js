@@ -22,7 +22,8 @@ const index = async (_req, res) => {
 const show = async (req, res) => {
   try {
     const parent = await store.show(req.params.id);
-    res.status(200).json(successRes(200, parent));
+    const {user_id,password,verified,secret,...rest} = parent
+    res.status(200).json(successRes(200, rest));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));

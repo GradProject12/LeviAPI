@@ -22,7 +22,8 @@ const index = async (_req, res) => {
 const show = async (req, res) => {
   try {
     const doctor = await store.show(req.params.id);
-    res.status(200).json(successRes(200, doctor));
+    const {user_id,password,verified,secret,...rest} = doctor
+    res.status(200).json(successRes(200, rest));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -252,20 +253,26 @@ const sendCode = async (req, res) => {
     `,
       doctor.email
     );
-    res
-      .status(200)
-      .json(
-        successRes(
-          200,
-          [],
-          "Token is sent to your email"
-        )
-      );
+    res.status(200).json(successRes(200, [], "Token is sent to your email"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
   }
 };
+
+// const forgetPassword = (req, res) => {
+//   const { email } = req.body;
+//   const doctor = await store.verifyData(email);
+//   const token = jwt.sign({ doctor: newdoctor }, process.env.TOKEN_SERCRET);
+
+//   const otp = speakeasy.totp({
+//     secret: token,
+//     digits: 5,
+//     encoding: "base32",
+//     step: 300,
+//   });
+//   await store.forget(doctor.email,token)
+// };
 
 module.exports = {
   index,
@@ -275,5 +282,5 @@ module.exports = {
   remove,
   login,
   verify,
-  sendCode
+  sendCode,
 };

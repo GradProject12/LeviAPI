@@ -76,12 +76,12 @@ class DoctorStore {
 
   async verifyData(email) {
     try {
-      const sql = "SELECT secret,verified FROM users WHERE email=($1)";
+      const sql = "SELECT * FROM users WHERE email=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [email]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("email address is not valid");
+      else throw new Error("email address is not found");
     } catch (error) {
       throw new Error(error.message);
     }
@@ -168,6 +168,20 @@ class DoctorStore {
         if (bcrypt.compareSync(password + BCRYPT_PASSWORD, doctor.password))
           return doctor;
       } else throw new Error("email is not found");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async forget(email, token) {
+    try {
+      const sql =
+        "INSERT INTO password_reset (email,token) VALUES ($1,$2) RETURNING *";
+      const conn = await client.connect();
+      const result = await conn.query(sql, [email, token]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("email is not found");
     } catch (error) {
       throw new Error(error.message);
     }
