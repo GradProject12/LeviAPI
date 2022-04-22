@@ -61,7 +61,7 @@ const create = async (req, res) => {
       encoding: "base32",
       step: 300,
     });
-    await sendMail(
+    sendMail(
       "Signup Verification",
       `Your Verification Code is ${otp}
     Please note that it will expire in 5 mins.
@@ -200,7 +200,7 @@ const sendCode = async (req, res) => {
       encoding: "base32",
       step: 300,
     });
-    await sendMail(
+    sendMail(
       "Signup Verification",
       `Your Verification Code is ${otp}
     Please note that it will expire in 5 mins.

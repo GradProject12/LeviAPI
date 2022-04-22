@@ -22,7 +22,7 @@ const index = async (_req, res) => {
 const show = async (req, res) => {
   try {
     const doctor = await store.show(req.params.id);
-    const {user_id,password,verified,secret,...rest} = doctor
+    const { user_id, password, verified, secret, ...rest } = doctor;
     res.status(200).json(successRes(200, rest));
   } catch (error) {
     res.status(404);
@@ -87,7 +87,7 @@ const create = async (req, res) => {
       encoding: "base32",
       step: 300,
     });
-    await sendMail(
+    sendMail(
       "Signup Verification",
       `Your Verification Code is ${otp}
     Please note that it will expire in 5 mins.
@@ -246,7 +246,7 @@ const sendCode = async (req, res) => {
       encoding: "base32",
       step: 300,
     });
-    await sendMail(
+    sendMail(
       "Signup Verification",
       `Your Verification Code is ${otp}
     Please note that it will expire in 5 mins.
