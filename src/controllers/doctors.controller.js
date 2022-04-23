@@ -216,8 +216,7 @@ const login = async (req, res) => {
       successRes(
         200,
         {
-          email: loggedDoctor.email,
-          role: loggedDoctor.role,
+          id: loggedDoctor.user_id,
           token,
         },
         "Logged in successfully"

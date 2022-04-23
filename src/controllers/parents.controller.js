@@ -22,7 +22,7 @@ const index = async (_req, res) => {
 const show = async (req, res) => {
   try {
     const parent = await store.show(req.params.id);
-    const {user_id,password,verified,secret,...rest} = parent
+    const { user_id, password, verified, secret, ...rest } = parent;
     res.status(200).json(successRes(200, rest));
   } catch (error) {
     res.status(404);
@@ -170,8 +170,7 @@ const login = async (req, res) => {
       successRes(
         200,
         {
-          email: loggedParent.email,
-          role: loggedParent.role,
+          id: loggedParent.user_id,
           token,
         },
         "Logged in successfully"
@@ -207,15 +206,7 @@ const sendCode = async (req, res) => {
     `,
       parent.email
     );
-    res
-      .status(200)
-      .json(
-        successRes(
-          200,
-          [],
-          "Token is sent to your email"
-        )
-      );
+    res.status(200).json(successRes(200, [], "Token is sent to your email"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
