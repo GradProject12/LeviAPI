@@ -73,7 +73,7 @@ const create = async (req, res) => {
       .json(
         successRes(
           200,
-          { email: parent.email, token: token },
+          [],
           "Verification code is sent to your email"
         )
       );
