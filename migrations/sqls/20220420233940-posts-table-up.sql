@@ -7,3 +7,13 @@ CREATE TABLE posts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES assets (asset_id)
 );
+
+INSERT INTO posts (post_id,body) VALUES (1,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (2,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (3,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (4,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (5,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (6,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (7,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (8,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (9,'asdasfwq');

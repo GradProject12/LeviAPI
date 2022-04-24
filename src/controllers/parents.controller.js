@@ -69,10 +69,10 @@ const create = async (req, res) => {
       parent.email
     );
     res
-      .status(200)
+      .status(201)
       .json(
         successRes(
-          200,
+          201,
           [],
           "Verification code is sent to your email"
         )

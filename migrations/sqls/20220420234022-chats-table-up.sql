@@ -2,3 +2,5 @@ CREATE TABLE chats (
     chat_id SERIAL PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO chats (chat_id) VALUES (1);
