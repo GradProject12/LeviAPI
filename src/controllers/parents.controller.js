@@ -52,6 +52,11 @@ const create = async (req, res) => {
       throw new Error("password must be at least 8 characters ");
     if (parent.profile_image && !validator.isURL(parent.profile_image, []))
       throw new Error("image path is not valid");
+    if (
+      doctor.phone &&
+      !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
+    )
+      throw new Error("phone number is not valid");
 
     const newParent = await store.create(parent);
     const token = jwt.sign({ parent: newParent }, process.env.TOKEN_SERCRET);
@@ -70,13 +75,7 @@ const create = async (req, res) => {
     );
     res
       .status(201)
-      .json(
-        successRes(
-          201,
-          [],
-          "Verification code is sent to your email"
-        )
-      );
+      .json(successRes(201, [], "Verification code is sent to your email"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
