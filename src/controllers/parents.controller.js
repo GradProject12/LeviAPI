@@ -53,8 +53,8 @@ const create = async (req, res) => {
     if (parent.profile_image && !validator.isURL(parent.profile_image, []))
       throw new Error("image path is not valid");
     if (
-      doctor.phone &&
-      !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
+      parent.phone &&
+      !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(parent.phone)
     )
       throw new Error("phone number is not valid");
 
