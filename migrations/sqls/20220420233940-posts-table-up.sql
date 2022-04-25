@@ -8,12 +8,12 @@ CREATE TABLE posts (
     FOREIGN KEY (post_id) REFERENCES assets (asset_id)
 );
 
-INSERT INTO posts (post_id,body) VALUES (1,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (2,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (3,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (4,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (5,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (6,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (7,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (8,'asdasfwq');
-INSERT INTO posts (post_id,body) VALUES (9,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (111,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (112,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (113,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (114,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (115,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (116,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (117,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (118,'asdasfwq');
+INSERT INTO posts (post_id,body) VALUES (119,'asdasfwq');

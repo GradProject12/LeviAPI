@@ -7,6 +7,7 @@ const doctors = require("./doctors.route");
 const parents = require("./parents.route");
 const robots = require("./robots.route");
 const bookmarks = require("./bookmarks.route");
+const posts = require("./posts.route");
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.use("/api/doctors", doctors);
 router.use("/api/parents", parents);
 router.use("/api/robots", robots);
 router.use("/api/bookmarks", bookmarks);
+router.use("/api/posts", posts);
 
 module.exports = router;

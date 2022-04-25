@@ -8,14 +8,14 @@ CREATE TABLE messages (
     FOREIGN KEY (chat_id) REFERENCES chats (chat_id)
 );
 
-INSERT INTO messages (message_id, body, chat_id) VALUES (11,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (12,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (13,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (14,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (15,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (16,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (17,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (18,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (20,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (21,'asdasd',1);
-INSERT INTO messages (message_id, body, chat_id) VALUES (22,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1111,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1112,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1113,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1114,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1115,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1116,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1117,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1118,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1120,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1121,'asdasd',1);
+INSERT INTO messages (message_id, body, chat_id) VALUES (1122,'asdasd',1);

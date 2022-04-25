@@ -9,20 +9,20 @@ CREATE TABLE bookmarks (
 );
 
 
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,1);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,2);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,3);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,4);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,5);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,6);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,7);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,8);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,9);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,10);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,11);   //messages
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,12);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,13);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (800,14);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,20);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,21);
-INSERT INTO bookmarks (user_id,asset_id) VALUES (700,22);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,111);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,112);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,113);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,114);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,115);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,116);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,117);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,118);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,119);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,1110);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,1111);   
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,1112);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,1113);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (800,1114);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,1120);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,1121);
+INSERT INTO bookmarks (user_id,asset_id) VALUES (700,1122);
