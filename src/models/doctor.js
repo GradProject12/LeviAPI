@@ -64,7 +64,6 @@ class DoctorStore {
       conn.release();
       return result.rows[0];
     } catch (error) {
-      console.log(error)
       if (error.code === "23505")
         throw new Error(
           `${stringBetweenParentheses(error.detail)} already exists`
