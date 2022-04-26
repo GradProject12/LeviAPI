@@ -68,33 +68,6 @@ class ParentStore {
     }
   }
 
-  async verifyData(email) {
-    try {
-      const sql = "SELECT secret,verified FROM users WHERE email=($1)";
-      const conn = await client.connect();
-      const result = await conn.query(sql, [email]);
-      conn.release();
-      if (result.rows.length) return result.rows[0];
-      else throw new Error("email address is not valid");
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
-  async setVerified(email) {
-    try {
-      const sql =
-        "UPDATE users SET verified=($1) WHERE email=($2) RETURNING * ";
-      const conn = await client.connect();
-      const result = await conn.query(sql, [true, email]);
-      conn.release();
-      if (result.rows.length) return result.rows[0];
-      else throw new Error("email address is not valid");
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
   async update(parent, id) {
     try {
       const updateUser =
@@ -147,21 +120,7 @@ class ParentStore {
     }
   }
 
-  async login(email, password) {
-    try {
-      const sql = "SELECT * FROM users WHERE email=($1)";
-      const conn = await client.connect();
-      const result = await conn.query(sql, [email]);
-      conn.release();
-      if (result.rows.length) {
-        const parent = result.rows[0];
-        if (bcrypt.compareSync(password + BCRYPT_PASSWORD, parent.password))
-          return parent;
-      } else throw new Error("email is not found");
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
+  
 }
 
 module.exports = ParentStore;

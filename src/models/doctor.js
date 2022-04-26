@@ -64,6 +64,7 @@ class DoctorStore {
       conn.release();
       return result.rows[0];
     } catch (error) {
+      console.log(error)
       if (error.code === "23505")
         throw new Error(
           `${stringBetweenParentheses(error.detail)} already exists`
@@ -74,32 +75,7 @@ class DoctorStore {
     }
   }
 
-  async verifyData(email) {
-    try {
-      const sql = "SELECT * FROM users WHERE email=($1)";
-      const conn = await client.connect();
-      const result = await conn.query(sql, [email]);
-      conn.release();
-      if (result.rows.length) return result.rows[0];
-      else throw new Error("email address is not found");
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
 
-  async setVerified(email) {
-    try {
-      const sql =
-        "UPDATE users SET verified=($1) WHERE email=($2) RETURNING * ";
-      const conn = await client.connect();
-      const result = await conn.query(sql, [true, email]);
-      conn.release();
-      if (result.rows.length) return result.rows[0];
-      else throw new Error("email address is not valid");
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
 
   async update(doctor, id) {
     try {
@@ -153,22 +129,6 @@ class DoctorStore {
       else throw new Error("doctor is not found");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
-      throw new Error(error.message);
-    }
-  }
-
-  async login(email, password) {
-    try {
-      const sql = "SELECT * FROM users WHERE email=($1)";
-      const conn = await client.connect();
-      const result = await conn.query(sql, [email]);
-      conn.release();
-      if (result.rows.length) {
-        const doctor = result.rows[0];
-        if (bcrypt.compareSync(password + BCRYPT_PASSWORD, doctor.password))
-          return doctor;
-      } else throw new Error("email is not found");
-    } catch (error) {
       throw new Error(error.message);
     }
   }

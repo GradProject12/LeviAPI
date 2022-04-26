@@ -3,7 +3,7 @@ CREATE TABLE doctors (
     certificate_image VARCHAR,
     clinic_location VARCHAR,
     clinic_phone_number VARCHAR,
-    national_id INTEGER NOT NULL,
+    national_id VARCHAR(255) NOT NULL,
     start_time TIME,
     end_time TIME,
     days_of_week VARCHAR[],
