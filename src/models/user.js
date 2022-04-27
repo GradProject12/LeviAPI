@@ -4,6 +4,18 @@ const bcrypt = require("bcrypt");
 const { BCRYPT_PASSWORD } = process.env;
 
 class UserStore {
+  async checkVerified(email) {
+    try {
+      const sql = "SELECT verified FROM users WHERE email=($1)";
+      const conn = await client.connect();
+      const result = await conn.query(sql, [email]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("email address is not found");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
   async verifyData(email) {
     try {
       const sql = "SELECT * FROM users WHERE email=($1)";

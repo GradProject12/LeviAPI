@@ -123,13 +123,12 @@ exports.verify = async (req, res) => {
       error.code = 422;
       throw error;
     }
-    const verifiedUser =  userStore.verifyData(user.email);
-    if (verifiedUser.verified) {
+    const verifiedUser = await userStore.checkVerified(user.email);
+    if (await verifiedUser.verified) {
       return res
         .status(409)
         .json(successRes(409, [], "Account already verified"));
     }
-
     const setVerifie = await userStore.setVerified(user.email);
 
     const verify = speakeasy.totp.verify({
