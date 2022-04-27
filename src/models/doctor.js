@@ -53,7 +53,6 @@ class DoctorStore {
         doctor.secret,
       ]);
       const newUser = user.rows[0];
-      console.log(doctor.working_schedule)
       const result = await conn.query(sql, [
         newUser.user_id,
         doctor.clinic_location,
@@ -73,14 +72,12 @@ class DoctorStore {
     }
   }
 
-
-
   async update(doctor, id) {
     try {
       const updateUser =
         "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), password=COALESCE($3,password), profile_image=COALESCE($4,profile_image) WHERE user_id=($5) RETURNING *";
       const updateDoctor =
-        "UPDATE doctors SET clinic_location=COALESCE($1,clinic_location), start_time=COALESCE($2,start_time), end_time=COALESCE($3,end_time), days_of_week=COALESCE($4,days_of_week) where doctor_id=($5) RETURNING * ";
+        "UPDATE doctors SET clinic_location=COALESCE($1,clinic_location),  working_schedule=COALESCE($2,working_schedule) where doctor_id=($3) RETURNING * ";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
         doctor.password + BCRYPT_PASSWORD,
@@ -95,9 +92,7 @@ class DoctorStore {
       ]);
       const result2 = await conn.query(updateDoctor, [
         doctor.clinic_location,
-        doctor.start_time,
-        doctor.end_time,
-        doctor.days_of_week,
+        doctor.working_schedule,
         id,
       ]);
       conn.release();

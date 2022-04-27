@@ -34,9 +34,7 @@ const update = async (req, res) => {
     password: req.body.password,
     profile_image: req.body.profile_image,
     clinic_location: req.body.clinic_location,
-    start_time: req.body.start_time,
-    end_time: req.body.end_time,
-    days_of_week: req.body.days_of_week,
+    working_schedule: req.body.working_schedule,
   };
   try {
     if (doctor.email && !validator.isEmail(doctor.email))
@@ -51,17 +49,17 @@ const update = async (req, res) => {
     )
       throw new Error("phone number is not valid");
 
-    if (
-      doctor.start_time &&
-      !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.start_time)
-    )
-      throw new Error("start time is not valid time");
+    // if (
+    //   doctor.start_time &&
+    //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.start_time)
+    // )
+    //   throw new Error("start time is not valid time");
 
-    if (
-      doctor.end_time &&
-      !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.end_time)
-    )
-      throw new Error("end time is not valid time");
+    // if (
+    //   doctor.end_time &&
+    //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.end_time)
+    // )
+    //   throw new Error("end time is not valid time");
 
     const doctorn = await store.update(doctor, req.params.id);
     res

@@ -64,17 +64,17 @@ exports.signup = async (req, res) => {
       throw new Error("phone number is not valid");
 
     if (user.role === "doctor") {
-      if (
-        user.start_time &&
-        !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(user.start_time)
-      )
-        throw new Error("start time is not valid time");
+      // if (
+      //   user.start_time &&
+      //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(user.start_time)
+      // )
+      //   throw new Error("start time is not valid time");
 
-      if (
-        user.end_time &&
-        !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(user.end_time)
-      )
-        throw new Error("end time is not valid time");
+      // if (
+      //   user.end_time &&
+      //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(user.end_time)
+      // )
+      //   throw new Error("end time is not valid time");
       if (user.national_id && user.national_id.length != 14)
         throw new Error("national id must be 14 number ");
       await doctorStore.create(user);
