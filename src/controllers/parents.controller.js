@@ -11,7 +11,7 @@ const index = async (_req, res) => {
   try {
     const parents = await store.index();
     if (!parents.length)
-      return res.status(200).json(successRes(200, [], "Nothing exits"));
+      return res.status(200).json(successRes(200, null, "Nothing exits"));
     res.status(200).json(successRes(200, parents));
   } catch (error) {
     res.status(404);
@@ -61,7 +61,7 @@ const remove = async (req, res) => {
     await store.delete(req.params.id);
     res
       .status(200)
-      .json(successRes(200, [], "Account is removed successfully"));
+      .json(successRes(200, null, "Account is removed successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));

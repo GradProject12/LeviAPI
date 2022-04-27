@@ -74,7 +74,7 @@ const update = async (req, res) => {
       throw error;
     }
     await store.update(post, req.params.post_id);
-    res.status(200).json(successRes(200, [], "Post is updated successfully"));
+    res.status(200).json(successRes(200, null, "Post is updated successfully"));
   } catch (error) {
     error.code &&
       res.status(error.code).json(errorRes(error.code, error.message));
@@ -88,7 +88,7 @@ const remove = async (req, res) => {
     const post = await store.delete(req.params.post_id);
     const str = post.file[0];
     deleteFile(str.substring(str.indexOf("upload")));
-    res.status(200).json(successRes(200, [], "Post is deleted successfully"));
+    res.status(200).json(successRes(200, null, "Post is deleted successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));

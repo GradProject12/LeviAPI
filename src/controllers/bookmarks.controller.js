@@ -35,7 +35,7 @@ const addToBookmark = async (req, res) => {
     await store.addToBookmark(req.params.user_id, req.body.asset_id);
     res
       .status(201)
-      .json(successRes(201, [], "Added to bookmark successfully."));
+      .json(successRes(201, null, "Added to bookmark successfully."));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -48,7 +48,7 @@ const deleteBookmark = async (req, res) => {
     await store.deleteBookmark(req.params.user_id, req.body.asset_id);
     res
       .status(200)
-      .json(successRes(200, [], "Removed from bookmark successfully."));
+      .json(successRes(200, null, "Removed from bookmark successfully."));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));

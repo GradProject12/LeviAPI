@@ -4,7 +4,7 @@ const successRes = (code, data, message) => {
     code: code,
     message: message,
   };
-  if (data.length) res.data = data;
+  if (data) res.data = data;
   return res;
 };
 

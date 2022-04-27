@@ -37,7 +37,7 @@ class DoctorStore {
       const addToUsers =
         "INSERT INTO users (full_name, email, phone, password, profile_image, role, secret) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *";
       const sql =
-        "INSERT INTO doctors(doctor_id, clinic_location, start_time, end_time, days_of_week,national_id) VALUES($1,$2,$3,$4,$5,$6) RETURNING *";
+        "INSERT INTO doctors(doctor_id, clinic_location, working_schedule,national_id) VALUES($1,$2,$3,$4) RETURNING *";
       const conn = await client.connect();
       const hash = bcrypt.hashSync(
         doctor.password + BCRYPT_PASSWORD,
@@ -53,12 +53,11 @@ class DoctorStore {
         doctor.secret,
       ]);
       const newUser = user.rows[0];
+      console.log(doctor.working_schedule)
       const result = await conn.query(sql, [
         newUser.user_id,
         doctor.clinic_location,
-        doctor.start_time,
-        doctor.end_time,
-        doctor.days_of_week,
+        doctor.working_schedule,
         doctor.national_id,
       ]);
       conn.release();

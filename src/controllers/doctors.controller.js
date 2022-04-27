@@ -8,7 +8,7 @@ const index = async (_req, res) => {
   try {
     const doctors = await store.index();
     if (!doctors.length)
-      return res.status(200).json(successRes(200, [], "Nothing exits"));
+      return res.status(200).json(successRes(200, null, "Nothing exits"));
     res.status(200).json(successRes(200, doctors));
   } catch (error) {
     res.status(404);
@@ -78,7 +78,7 @@ const remove = async (req, res) => {
     await store.delete(req.params.id);
     res
       .status(200)
-      .json(successRes(200, [], "Account is removed successfully"));
+      .json(successRes(200, null, "Account is removed successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));

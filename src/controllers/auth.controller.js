@@ -21,9 +21,7 @@ exports.signup = async (req, res) => {
     profile_image: req.body.profile_image,
     secret: secret,
     clinic_location: req.body.clinic_location,
-    start_time: req.body.start_time,
-    end_time: req.body.end_time,
-    days_of_week: req.body.days_of_week,
+    working_schedule: req.body.working_schedule,
     national_id: req.body.national_id,
     doctor_id: req.body.doctor_id,
     role: req.body.role,
@@ -59,7 +57,7 @@ exports.signup = async (req, res) => {
     if (user.password.length < 8)
       throw new Error("password must be at least 8 characters ");
 
-    if (user.profile_image && !validator.isURL(user.profile_image, []))
+    if (user.profile_image && !validator.isURL(user.profile_image, null))
       throw new Error("image path is not valid");
 
     if (user.phone && !/(01[0-2]|015)\d{8}$/.test(user.phone))
@@ -97,7 +95,7 @@ exports.signup = async (req, res) => {
     );
     res
       .status(201)
-      .json(successRes(201, [], "Verification code is sent to your email"));
+      .json(successRes(201, null, "Verification code is sent to your email"));
   } catch (error) {
     error.code &&
       res.status(error.code).json(errorRes(error.code, error.message));
@@ -127,7 +125,7 @@ exports.verify = async (req, res) => {
     if (await verifiedUser.verified) {
       return res
         .status(409)
-        .json(successRes(409, [], "Account already verified"));
+        .json(successRes(409, null, "Account already verified"));
     }
     const setVerifie = await userStore.setVerified(user.email);
 
@@ -142,8 +140,8 @@ exports.verify = async (req, res) => {
       await userStore.setVerified(user.email);
       res
         .status(200)
-        .json(successRes(200, [], "Account Verified Successifully"));
-    } else res.status(400).json(successRes(400, [], "Wrong OTP"));
+        .json(successRes(200, null, "Account Verified Successifully"));
+    } else res.status(400).json(successRes(400, null, "Wrong OTP"));
   } catch (error) {
     error.code &&
       res.status(error.code).json(errorRes(error.code, error.message));
@@ -172,7 +170,7 @@ exports.login = async (req, res) => {
     if (!loggeduser.verified)
       return res
         .status(400)
-        .json(successRes(400, [], "Account is not verified"));
+        .json(successRes(400, null, "Account is not verified"));
     const token = jwt.sign({ loggeduser }, process.env.TOKEN_SERCRET, {
       expiresIn: "30m",
     });
@@ -212,7 +210,7 @@ exports.sendCode = async (req, res) => {
     if (newuser)
       return res
         .status(409)
-        .json(successRes(409, [], "Account already verified"));
+        .json(successRes(409, null, "Account already verified"));
 
     const otp = speakeasy.totp({
       secret: newuser.secret,
@@ -227,7 +225,7 @@ exports.sendCode = async (req, res) => {
       `,
       user.email
     );
-    res.status(200).json(successRes(200, [], "Token is sent to your email"));
+    res.status(200).json(successRes(200, null, "Token is sent to your email"));
   } catch (error) {
     error.code &&
       res.status(error.code).json(errorRes(error.code, error.message));
@@ -239,7 +237,7 @@ exports.sendCode = async (req, res) => {
 // exports.logout = async (req, res) => {
 //   try {
 //     res.cookie("jwt", "", { maxAge: 1 });
-//     res.status(200).json(successRes(200, [], "Logged out successfully"));
+//     res.status(200).json(successRes(200, null, "Logged out successfully"));
 //   } catch (error) {
 //     res.status(400);
 //     res.json(errorRes(400, error.message));
