@@ -234,6 +234,117 @@ exports.sendCode = async (req, res) => {
     res.json(errorRes(400, error.message));
   }
 };
+
+exports.forgetPassword = async (req, res) => {
+  const secret = speakeasy.generateSecret().base32;
+  const { email } = req.body;
+  try {
+    const exist = await userStore.emailExist(email);
+    if (!exist)
+      return res.status(400).json(successRes(400, null, "Email doesn't exist"));
+    await userStore.storePasswordResetToken(secret, email);
+    const otp = speakeasy.totp({
+      secret: secret,
+      digits: 5,
+      encoding: "base32",
+      step: 300,
+    });
+    sendMail(
+      "Password Reset",
+      `
+        <p>Your password reset code is <b>${otp}</b></p>
+        `,
+      email
+    );
+    res
+      .status(201)
+      .json(successRes(201, null, "Password reset code is sent to your email"));
+  } catch (error) {
+    error.code &&
+      res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
+exports.verifyPasswordReset = async (req, res) => {
+  const { otp, email } = req.body;
+  try {
+    if (!email) {
+      const error = new Error("email is missing");
+      error.code = 422;
+      throw error;
+    }
+    if (!otp) {
+      const error = new Error("otp is missing");
+      error.code = 422;
+      throw error;
+    }
+
+    const setVerifie = await userStore.checkResetToken(email);
+
+    const verify = speakeasy.totp.verify({
+      secret: setVerifie.reset_token,
+      encoding: "base32",
+      token: otp,
+      digits: 5,
+      step: 300,
+    });
+    if (verify) {
+      await userStore.setVerified(email);
+      res.status(200).json(successRes(200, null, "Token confirmed"));
+    } else res.status(400).json(successRes(400, null, "Wrong OTP"));
+  } catch (error) {
+    error.code &&
+      res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { otp, password, confirm_password, email } = req.body;
+  try {
+    if (!otp) {
+      const error = new Error("otp is missing");
+      error.code = 422;
+      throw error;
+    }
+    const setVerifie = await userStore.checkResetToken(email);
+
+    const verify = speakeasy.totp.verify({
+      secret: setVerifie.reset_token,
+      encoding: "base32",
+      token: otp,
+      digits: 5,
+      step: 300,
+    });
+    if (verify) {
+      if (!password) {
+        const error = new Error("password is missing");
+        error.code = 422;
+        throw error;
+      }
+      if (!confirm_password) {
+        const error = new Error("confirm password is missing");
+        error.code = 422;
+        throw error;
+      }
+      if (password !== confirm_password)
+        res.status(400).json(errorRes(400, "Password doesn't match!"));
+      await userStore.updatePassword(email, password);
+      return res
+        .status(200)
+        .json(successRes(200, null, "Password changed successfully"));
+    } else res.status(400).json(successRes(400, null, "Wrong OTP"));
+  } catch (error) {
+    error.code &&
+      res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 // exports.logout = async (req, res) => {
 //   try {
 //     res.cookie("jwt", "", { maxAge: 1 });

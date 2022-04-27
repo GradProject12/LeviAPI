@@ -8,6 +8,7 @@ CREATE TABLE users (
     role VARCHAR(200) NOT NULL CHECK (role IN ('doctor','parent')),
     secret VARCHAR,
     verified BOOLEAN DEFAULT FALSE NOT NULL,
+    reset_token VARCHAR,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
