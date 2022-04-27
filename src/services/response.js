@@ -1,18 +1,19 @@
 const successRes = (code, data, message) => {
-  return {
+  const res = {
     status: "success",
     code: code,
-    data: data,
     message: message,
   };
+  if (data.length) res.data = data;
+  return res;
 };
 
-const errorRes = (code,message) => {
+const errorRes = (code, message) => {
   return {
     status: "error",
-    code:code,
+    code: code,
     message: message,
   };
 };
 
-module.exports = {successRes,errorRes}
+module.exports = { successRes, errorRes };
