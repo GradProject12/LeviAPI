@@ -123,21 +123,24 @@ exports.verify = async (req, res) => {
       error.code = 422;
       throw error;
     }
-
-    const verifiedUser = await userStore.setVerified(user.email);
-    if (verifiedUser.verified)
+    const verifiedUser =  userStore.verifyData(user.email);
+    if (verifiedUser.verified) {
       return res
         .status(409)
         .json(successRes(409, [], "Account already verified"));
+    }
+
+    const setVerifie = await userStore.setVerified(user.email);
+
     const verify = speakeasy.totp.verify({
-      secret: verifiedUser.secret,
+      secret: setVerifie.secret,
       encoding: "base32",
       token: user.otp,
       digits: 5,
       step: 300,
     });
     if (verify) {
-      await store.setVerified(user.email);
+      await userStore.setVerified(user.email);
       res
         .status(200)
         .json(successRes(200, [], "Account Verified Successifully"));
