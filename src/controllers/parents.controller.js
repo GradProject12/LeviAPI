@@ -10,9 +10,9 @@ const store = new ParentStore();
 const index = async (_req, res) => {
   try {
     const parents = await store.index();
-    res.status(200).json(successRes(200, parents));
     if (!parents.length)
       return res.status(200).json(successRes(200, [], "Nothing exits"));
+    res.status(200).json(successRes(200, parents));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
