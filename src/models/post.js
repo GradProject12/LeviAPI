@@ -32,15 +32,13 @@ class PostStore {
       const sql1 =
         "INSERT INTO assets(user_id, type) VALUES($1, $2) RETURNING *";
       const sql2 =
-        "INSERT INTO posts(post_id,body,file, image,type) VALUES($1, $2,$3,$4,$5) RETURNING *";
+        "INSERT INTO posts(post_id,body,file,type) VALUES($1, $2,$3,$4) RETURNING *";
       const conn = await client.connect();
       const result1 = await conn.query(sql1, [post.user_id, "post"]);
-      console.log(post.image)
       const result2 = await conn.query(sql2, [
         result1.rows[0].asset_id,
         post.body,
         post.file,
-        post.image,
         post.type,
       ]);
       conn.release();
@@ -59,14 +57,9 @@ class PostStore {
   async update(post, post_id) {
     try {
       const sql =
-        "UPDATE posts SET body=COALESCE($1,name),file=COALESCE($2,file), image=COALESCE($3,image) where post_id=($4) RETURNING * ";
+        "UPDATE posts SET body=COALESCE($1,body),file=COALESCE($2,file) where post_id=($3) RETURNING * ";
       const conn = await client.connect();
-      const result = await conn.query(sql, [
-        post.body,
-        post.file,
-        post.image,
-        post_id,
-      ]);
+      const result = await conn.query(sql, [post.body, post.file, post_id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
       else throw new Error("post is not found");

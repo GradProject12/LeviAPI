@@ -1,33 +1,5 @@
 const nodemailer = require("nodemailer");
-const multer = require("multer");
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + file.originalname);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null, true);
-  } else {
-    cb(null, false);
-    const err = new Error("Only .png, .jpg and .jpeg format allowed!");
-    err.name = "ExtensionError";
-    return cb(err);
-  }
-};
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5,
-  },
-  fileFilter: fileFilter,
-});
+const fs = require("fs");
 
 function sendMail(subject, body, to) {
   let transporter = nodemailer.createTransport({
@@ -61,4 +33,12 @@ const stringBetweenParentheses = (st) => {
   var matches = regExp.exec(st);
   return matches[1];
 };
-module.exports = { stringBetweenParentheses, sendMail, upload };
+
+const deleteFile = (path) => {
+  fs.unlink(path, function (err) {
+    if (err) return;
+    console.log("File deleted!");
+  });
+};
+
+module.exports = { stringBetweenParentheses, sendMail, deleteFile };
