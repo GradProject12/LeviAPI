@@ -28,23 +28,28 @@ const create = async (req, res) => {
     user_id: req.params.user_id,
     body: req.body.body,
   };
-  if (req.files.length) {
-    let path = [];
-    req.files.map((file) => {
-      path.push(`http://${req.headers.host}/${file.path}`);
-    });
-    post.file = path;
-  }
   try {
     if (!post.body) {
       const error = new Error("Post's body is missing");
       error.code = 422;
       throw error;
     }
-    // if (req.files.length) {
-    //   // if (post.file.length === 1 &&) post.type = "text_with";
-    // } else
-    post.type = "text_only";
+    if (req.files.length) {
+      let path = [];
+      req.files.map((file) => {
+        path.push(`http://${req.headers.host}/${file.path}`);
+      });
+      post.file = path;
+    }
+    const imagetypes = /jpeg|jpg|png/;
+    const filetypes = /pdf|doc|txt/;
+    const file = req.files.length && req.files[0].mimetype;
+    if (!file) post.type = "text_only";
+    else if (req.files.length === 1) {
+      if (imagetypes.test(file)) post.type = "text_with_image";
+      else if (filetypes.test(file)) post.type = "text_with_file";
+    } else if (req.files.length > 1 && imagetypes.test(file))
+      post.type = "text_with_album";
 
     const newpost = await store.create(post);
     res.status(200).json(successRes(200, newpost));
