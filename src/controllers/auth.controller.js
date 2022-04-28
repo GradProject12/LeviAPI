@@ -207,7 +207,7 @@ exports.sendCode = async (req, res) => {
       throw new Error("email address is not valid ");
 
     const newuser = await userStore.isVerified(user.email);
-    if (newuser)
+    if (newuser.verified)
       return res
         .status(409)
         .json(successRes(409, null, "Account already verified"));

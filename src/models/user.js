@@ -67,8 +67,7 @@ class UserStore {
       const result = await conn.query(sql, [email]);
       conn.release();
       if (result.rows.length) {
-        if (result.rows[0].verified) return true;
-        else false;
+        return result.rows[0];
       } else {
         throw new Error("email is not found");
       }
