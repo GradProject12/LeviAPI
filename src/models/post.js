@@ -5,7 +5,10 @@ class PostStore {
   async index(params) {
     try {
       const sql =
-        "SELECT *,COUNT(*) OVER() AS total_count FROM posts ORDER BY ($1) OFFSET ($2) LIMIT ($3)";
+        `SELECT us.user_id,us.profile_image,us.full_name,pos.post_id,pos.body,pos.created_at,COUNT(*) OVER() AS total_count FROM posts AS pos 
+        JOIN assets AS ass ON pos.post_id=ass.asset_id
+        JOIN users AS us ON ass.user_id=us.user_id 
+        ORDER BY ($1) OFFSET ($2) LIMIT ($3)`;
       const conn = await client.connect();
       const result = await conn.query(sql, [
         params.filter,
@@ -21,7 +24,10 @@ class PostStore {
 
   async show(post_id) {
     try {
-      const sql = "SELECT * FROM posts WHERE post_id=($1)";
+      const sql = `SELECT us.user_id,us.profile_image,us.full_name,pos.post_id,pos.body,pos.created_at FROM posts AS pos
+      JOIN assets AS ass ON pos.post_id=ass.asset_id
+      JOIN users AS us ON ass.user_id=us.user_id 
+       WHERE post_id=($1)`;
       const conn = await client.connect();
       const result = await conn.query(sql, [post_id]);
       conn.release();
