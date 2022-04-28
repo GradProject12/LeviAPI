@@ -1,8 +1,8 @@
 exports.pagination = (model) => async (req, res, next) => {
   const params = {
-    per_page: +req.query.per_page || 10,
+    per_page: 12,
     page: +req.query.page || 1,
-    filter: req.query.filter_by || "created_at",
+    filter: "created_at",
   };
   const { per_page, page } = params;
 
@@ -11,18 +11,18 @@ exports.pagination = (model) => async (req, res, next) => {
   const page_count = Math.ceil(total_count / per_page) || 0;
   const meta = {
     links: [
-      { self: `${req.baseUrl}?page=${page}&per_page=${per_page}` },
-      { first: `${req.baseUrl}?page=1&per_page=${per_page}` },
+      { self: `${req.baseUrl}?page=${page}` },
+      { first: `${req.baseUrl}?page=1` },
       {
         previous:
-          page !== 1 && `${req.baseUrl}?page=${page - 1}&per_page=${per_page}`,
+          page !== 1 && `${req.baseUrl}?page=${page - 1}`,
       },
       {
         next:
           page * per_page < total_count &&
-          `${req.baseUrl}?page=${page + 1}&per_page=${per_page}`,
+          `${req.baseUrl}?page=${page + 1}`,
       },
-      { last: `${req.baseUrl}?page=${page_count}&per_page=${per_page}` },
+      { last: `${req.baseUrl}?page=${page_count}` },
     ],
     total_count: total_count,
     current_page: page,
@@ -30,10 +30,9 @@ exports.pagination = (model) => async (req, res, next) => {
     page_count: page_count,
     hasPreviousPage: page > 1,
     hasNextPage: page * per_page < total_count,
+    remaning_page:page_count-page
   };
-  data = [
-    ...items,
-  ];
+  data = [...items];
   res.paginatedResult = meta;
   res.data = data;
   next();
