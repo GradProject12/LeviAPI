@@ -2,11 +2,16 @@ const client = require("../database");
 const { stringBetweenParentheses } = require("../services/helpers");
 
 class PostStore {
-  async index() {
+  async index(params) {
     try {
-      const sql = "SELECT * FROM posts";
+      const sql =
+        "SELECT *,COUNT(*) OVER() AS total_count FROM posts ORDER BY ($1) OFFSET ($2) LIMIT ($3)";
       const conn = await client.connect();
-      const result = await conn.query(sql);
+      const result = await conn.query(sql, [
+        params.filter,
+        (params.page - 1) * params.per_page,
+        params.per_page,
+      ]);
       conn.release();
       return result.rows;
     } catch (error) {

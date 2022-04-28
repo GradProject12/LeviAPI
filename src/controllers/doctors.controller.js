@@ -6,10 +6,11 @@ const store = new DoctorStore();
 
 const index = async (_req, res) => {
   try {
-    const doctors = await store.index();
-    if (!doctors.length)
+    if (!res.data.length)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
-    res.status(200).json(successRes(200, doctors));
+    res
+      .status(200)
+      .json(successRes(200, res.data, undefined, res.paginatedResult));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));

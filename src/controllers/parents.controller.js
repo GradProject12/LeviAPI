@@ -9,10 +9,11 @@ const store = new ParentStore();
 
 const index = async (_req, res) => {
   try {
-    const parents = await store.index();
-    if (!parents.length)
+    if (!res.data.length)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
-    res.status(200).json(successRes(200, parents));
+    res
+      .status(200)
+      .json(successRes(200, res.data, undefined, res.paginatedResult));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));

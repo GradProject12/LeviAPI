@@ -4,8 +4,12 @@ const { fileUploadd } = require("../services/upload");
 
 const postController = require("../controllers/posts.controller");
 const verifyAuthToken = require("../services/auth");
+const postStore = require("../models/post");
+const {pagination} = require("../services/middleware");
 
-router.get("/", verifyAuthToken, postController.index);
+const store = new postStore();
+
+router.get("/", verifyAuthToken, pagination(store), postController.index);
 router.get("/:post_id", verifyAuthToken, postController.show);
 router.put("/:post_id", verifyAuthToken, fileUploadd, postController.update);
 router.delete("/:post_id", verifyAuthToken, postController.remove);

@@ -5,12 +5,16 @@ const { stringBetweenParentheses } = require("../services/helpers");
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 
 class ParentStore {
-  async index() {
+  async index(params) {
     try {
       const sql =
-        "SELECT * FROM users JOIN parents on users.user_id=parents.parent_id";
+        "SELECT *,COUNT(*) OVER() AS total_count FROM users JOIN parents on users.user_id=parents.parent_id ORDER BY ($1) OFFSET ($2) LIMIT ($3)";
       const conn = await client.connect();
-      const result = await conn.query(sql);
+      const result = await conn.query(sql, [
+        params.filter,
+        (params.page - 1) * params.per_page,
+        params.per_page,
+      ]);
       conn.release();
       return result.rows;
     } catch (error) {
@@ -119,8 +123,6 @@ class ParentStore {
       throw new Error(error.message);
     }
   }
-
-  
 }
 
 module.exports = ParentStore;

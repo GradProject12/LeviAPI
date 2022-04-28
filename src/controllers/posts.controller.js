@@ -5,8 +5,11 @@ const { deleteFile } = require("../services/helpers");
 
 const index = async (req, res) => {
   try {
-    const posts = await store.index();
-    res.status(200).json(successRes(200, posts));
+    if (!res.data.length)
+      return res.status(200).json(successRes(200, null, "Nothing exits"));
+    res
+      .status(200)
+      .json(successRes(200, res.data, undefined, res.paginatedResult));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));

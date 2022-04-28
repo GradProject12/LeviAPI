@@ -1,8 +1,9 @@
-const successRes = (code, data, message) => {
+const successRes = (code, data, message, meta) => {
   const res = {
     status: "success",
     code: code,
     message: message,
+    meta:meta
   };
   if (data) res.data = data;
   return res;
