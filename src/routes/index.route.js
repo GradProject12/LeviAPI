@@ -9,6 +9,7 @@ const robots = require("./robots.route");
 const bookmarks = require("./bookmarks.route");
 const posts = require("./posts.route");
 const auth = require("./auth.route");
+const analyses = require("./analyses.route");
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.use("/api/parents", parents);
 router.use("/api/robots", robots);
 router.use("/api/bookmarks", bookmarks);
 router.use("/api/posts", posts);
+router.use("/api/analyses", analyses);
 router.use("/api/", auth);
 
 module.exports = router;
