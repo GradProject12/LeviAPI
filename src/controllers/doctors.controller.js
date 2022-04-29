@@ -49,19 +49,6 @@ const update = async (req, res) => {
       !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
     )
       throw new Error("phone number is not valid");
-
-    // if (
-    //   doctor.start_time &&
-    //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.start_time)
-    // )
-    //   throw new Error("start time is not valid time");
-
-    // if (
-    //   doctor.end_time &&
-    //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(doctor.end_time)
-    // )
-    //   throw new Error("end time is not valid time");
-
     const doctorn = await store.update(doctor, req.params.id);
     res
       .status(200)
@@ -83,20 +70,6 @@ const remove = async (req, res) => {
     res.json(errorRes(404, error.message));
   }
 };
-
-// const forgetPassword = (req, res) => {
-//   const { email } = req.body;
-//   const doctor = await store.verifyData(email);
-//   const token = jwt.sign({ doctor: newdoctor }, process.env.TOKEN_SERCRET);
-
-//   const otp = speakeasy.totp({
-//     secret: token,
-//     digits: 5,
-//     encoding: "base32",
-//     step: 300,
-//   });
-//   await store.forget(doctor.email,token)
-// };
 
 module.exports = {
   index,

@@ -64,17 +64,6 @@ exports.signup = async (req, res) => {
       throw new Error("phone number is not valid");
 
     if (user.role === "doctor") {
-      // if (
-      //   user.start_time &&
-      //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(user.start_time)
-      // )
-      //   throw new Error("start time is not valid time");
-
-      // if (
-      //   user.end_time &&
-      //   !/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(user.end_time)
-      // )
-      //   throw new Error("end time is not valid time");
       if (user.national_id && user.national_id.length != 14)
         throw new Error("national id must be 14 number ");
       await doctorStore.create(user);
@@ -97,8 +86,8 @@ exports.signup = async (req, res) => {
       .status(201)
       .json(successRes(201, null, "Verification code is sent to your email"));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
@@ -143,8 +132,8 @@ exports.verify = async (req, res) => {
         .json(successRes(200, null, "Account Verified Successifully"));
     } else res.status(400).json(successRes(400, null, "Wrong OTP"));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
@@ -185,8 +174,8 @@ exports.login = async (req, res) => {
       )
     );
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
@@ -227,8 +216,8 @@ exports.sendCode = async (req, res) => {
     );
     res.status(200).json(successRes(200, null, "Token is sent to your email"));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
 
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -260,8 +249,8 @@ exports.forgetPassword = async (req, res) => {
       .status(201)
       .json(successRes(201, null, "Password reset code is sent to your email"));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
@@ -295,8 +284,8 @@ exports.verifyPasswordReset = async (req, res) => {
       res.status(200).json(successRes(200, null, "Token confirmed"));
     } else res.status(400).json(successRes(400, null, "Wrong OTP"));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
@@ -338,19 +327,9 @@ exports.resetPassword = async (req, res) => {
         .json(successRes(200, null, "Password changed successfully"));
     } else res.status(400).json(successRes(400, null, "Wrong OTP"));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
 };
-
-// exports.logout = async (req, res) => {
-//   try {
-//     res.cookie("jwt", "", { maxAge: 1 });
-//     res.status(200).json(successRes(200, null, "Logged out successfully"));
-//   } catch (error) {
-//     res.status(400);
-//     res.json(errorRes(400, error.message));
-//   }
-// };

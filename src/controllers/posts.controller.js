@@ -57,8 +57,8 @@ const create = async (req, res) => {
     const newpost = await store.create(post);
     res.status(200).json(successRes(200, newpost));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
@@ -84,8 +84,8 @@ const update = async (req, res) => {
     await store.update(post, req.params.post_id);
     res.status(200).json(successRes(200, null, "Post is updated successfully"));
   } catch (error) {
-    error.code &&
-      res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
     res.status(400);
     res.json(errorRes(400, error.message));
   }
