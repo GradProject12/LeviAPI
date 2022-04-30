@@ -42,8 +42,8 @@ exports.fileUploadd = (name) => (req, res, next) => {
     if (err instanceof multer.MulterError) {
       res.status(400).json(errorRes(400, err));
     } else if (err) {
-      console.log(err);
-      res.status(400).json(errorRes(400, err.message));
+      // console.log(err);
+      // res.status(400).json(errorRes(400, err.message));
     }
     next();
   });
