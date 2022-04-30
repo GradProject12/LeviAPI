@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
     doctor_id: req.body.doctor_id,
     role: req.body.role,
   };
-  console.log(req.body);
+
   try {
     if (!user.role) {
       const error = new Error("role is missing");
@@ -62,6 +62,9 @@ exports.signup = async (req, res) => {
       throw new Error("phone number is not valid");
 
     if (user.role === "doctor") {
+      if (!validator.isJSON(req.body.working_schedule, [])) {
+        throw new Error("working schedule must be of type json ");
+      }
       if (user.national_id && user.national_id.length != 14)
         throw new Error("national id must be 14 number ");
       if (req.files.length) {
@@ -70,11 +73,6 @@ exports.signup = async (req, res) => {
           path.push(`http://${req.headers.host}/${file.path}`);
         });
         user.certificate_image = path;
-      }
-      const strr = JSON.stringify(req.body.working_schedule);
-
-      if (!validator.isJSON(strr, [])) {
-        throw new Error("working schedule must be of type json ");
       }
       await doctorStore.create(user);
     } else if (user.role === "parent") await parentStore.create(user);
