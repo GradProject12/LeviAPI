@@ -71,6 +71,11 @@ exports.signup = async (req, res) => {
         });
         user.certificate_image = path;
       }
+      const strr = JSON.stringify(req.body.working_schedule);
+
+      if (!validator.isJSON(strr, [])) {
+        throw new Error("working schedule must be of type json ");
+      }
       await doctorStore.create(user);
     } else if (user.role === "parent") await parentStore.create(user);
 

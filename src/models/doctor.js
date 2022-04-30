@@ -66,11 +66,13 @@ class DoctorStore {
       conn.release();
       return result.rows[0];
     } catch (error) {
+      console.log(error)
       if (error.code === "23505")
         throw new Error(
           `${stringBetweenParentheses(error.detail)} already exists`
         );
       if (error.code === "23502") throw new Error(`${error.column} is null`);
+      if (error.code === "22P02") throw new Error(`working schedule is not vaild`);
 
       throw new Error(error.message);
     }
