@@ -1,5 +1,5 @@
 CREATE TABLE robots (
-    id SERIAL PRIMARY KEY,
+    robot_id SERIAL PRIMARY KEY,
     parent_id INTEGER,
     doctor_id INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

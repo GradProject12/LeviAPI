@@ -30,15 +30,14 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5,
-  },
-  fileFilter: fileFilter,
-}).array("file", 10);
-
-exports.fileUploadd = (req, res,next) => {
+exports.fileUploadd = (name) => (req, res, next) => {
+  const upload = multer({
+    storage: storage,
+    limits: {
+      fileSize: 1024 * 1024 * 5,
+    },
+    fileFilter: fileFilter,
+  }).array(name, 10);
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       res.status(400).json(errorRes(400, err));
@@ -46,6 +45,6 @@ exports.fileUploadd = (req, res,next) => {
       console.log(err);
       res.status(400).json(errorRes(400, err.message));
     }
-    next()
+    next();
   });
 };

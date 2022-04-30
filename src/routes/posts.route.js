@@ -11,8 +11,8 @@ const store = new postStore();
 
 router.get("/", verifyAuthToken, pagination(store), postController.index);
 router.get("/:post_id", verifyAuthToken, postController.show);
-router.put("/:post_id", verifyAuthToken, fileUploadd, postController.update);
+router.put("/:post_id", verifyAuthToken, fileUploadd("file"), postController.update);
 router.delete("/:post_id", verifyAuthToken, postController.remove);
-router.post("/:user_id", verifyAuthToken, fileUploadd, postController.create);
+router.post("/:user_id", verifyAuthToken, fileUploadd("file"), postController.create);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 CREATE TABLE animals (
-    id SERIAL PRIMARY KEY,
+    animal_id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
     picture VARCHAR,
     sound VARCHAR,

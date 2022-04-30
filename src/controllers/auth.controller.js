@@ -26,6 +26,7 @@ exports.signup = async (req, res) => {
     doctor_id: req.body.doctor_id,
     role: req.body.role,
   };
+  console.log(req.body)
   try {
     if (!user.role) {
       const error = new Error("role is missing");

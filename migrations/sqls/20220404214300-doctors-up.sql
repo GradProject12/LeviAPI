@@ -5,7 +5,7 @@ CREATE TABLE doctors (
     certificate_image VARCHAR,
     clinic_location VARCHAR,
     clinic_phone_number VARCHAR,
-    national_id VARCHAR(255) NOT NULL,
+    national_id bigint NOT NULL,
     working_schedule json,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (doctor_id) REFERENCES users (user_id) ON DELETE CASCADE
