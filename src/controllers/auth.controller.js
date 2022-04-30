@@ -18,7 +18,7 @@ exports.signup = async (req, res) => {
     email: req.body.email,
     phone: req.body.phone,
     password: req.body.password,
-    profile_image: req.body.profile_image,
+    certificate_image: req.body.certificate_image,
     secret: secret,
     clinic_location: req.body.clinic_location,
     working_schedule: req.body.working_schedule,
@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
     doctor_id: req.body.doctor_id,
     role: req.body.role,
   };
-  console.log(req.body)
+  console.log(req.body);
   try {
     if (!user.role) {
       const error = new Error("role is missing");
@@ -58,15 +58,19 @@ exports.signup = async (req, res) => {
     if (user.password.length < 8)
       throw new Error("password must be at least 8 characters ");
 
-    if (user.profile_image && !validator.isURL(user.profile_image, null))
-      throw new Error("image path is not valid");
-
     if (user.phone && !/(01[0-2]|015)\d{8}$/.test(user.phone))
       throw new Error("phone number is not valid");
 
     if (user.role === "doctor") {
       if (user.national_id && user.national_id.length != 14)
         throw new Error("national id must be 14 number ");
+      if (req.files.length) {
+        let path = [];
+        req.files.map((file) => {
+          path.push(`http://${req.headers.host}/${file.path}`);
+        });
+        user.certificate_image = path;
+      }
       await doctorStore.create(user);
     } else if (user.role === "parent") await parentStore.create(user);
 
