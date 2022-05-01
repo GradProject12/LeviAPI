@@ -62,7 +62,7 @@ exports.signup = async (req, res) => {
       throw new Error("phone number is not valid");
 
     if (user.role === "doctor") {
-      if (!validator.isJSON(req.body.working_schedule, [])) {
+      if (req.body.working_schedule &&!validator.isJSON(req.body.working_schedule, [])) {
         throw new Error("working schedule must be of type json ");
       }
       if (user.national_id && user.national_id.length != 14)

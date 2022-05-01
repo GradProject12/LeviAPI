@@ -2,6 +2,7 @@ const AdminStore = require("../models/admin");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const { successRes, errorRes } = require("../services/response");
+const { sendMail } = require("../services/helpers");
 
 const store = new AdminStore();
 
@@ -120,8 +121,23 @@ const authenticate = async (req, res) => {
 
 const acceptDoctor = async (req, res) => {
   try {
+    const result = await store.isAccepted(req.params.doctor_id);
+    if (result.accepted_status)
+      return res
+        .status(200)
+        .json(successRes(200, null, "Doctor is already confirmed"));
+
     await store.acceptDoctor(req.params.doctor_id);
-    res.status(200).json(successRes(200, null,"Doctor is confirmed successfully"));
+    sendMail(
+      "You have been accepted",
+      `Please note that you have been accepted successfully,
+      you can login through  our app.
+      `,
+      result.email
+    );
+    return res
+      .status(200)
+      .json(successRes(200, null, "Doctor is confirmed successfully"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));

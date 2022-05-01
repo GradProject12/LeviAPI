@@ -137,6 +137,20 @@ class AdminStore {
       throw new Error(error.message);
     }
   }
+
+  async isAccepted(doctor_id) {
+    try {
+      const sql = "SELECT accepted_status,email FROM doctors JOIN users ON doctors.doctor_id=users.user_id WHERE doctor_id=($1)";
+      const conn = await client.connect();
+      const result = await conn.query(sql, [doctor_id]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("doctor is not found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = AdminStore;
