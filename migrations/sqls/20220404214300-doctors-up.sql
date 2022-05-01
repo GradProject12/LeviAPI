@@ -1,5 +1,3 @@
-
-
 CREATE TABLE doctors (
     doctor_id SERIAL PRIMARY KEY,
     certificate_image VARCHAR,
