@@ -62,7 +62,10 @@ exports.signup = async (req, res) => {
       throw new Error("phone number is not valid");
 
     if (user.role === "doctor") {
-      if (req.body.working_schedule &&!validator.isJSON(req.body.working_schedule, [])) {
+      if (
+        req.body.working_schedule &&
+        !validator.isJSON(req.body.working_schedule, [])
+      ) {
         throw new Error("working schedule must be of type json ");
       }
       if (user.national_id && user.national_id.length != 14)
@@ -167,13 +170,16 @@ exports.login = async (req, res) => {
     const loggeduser = await userStore.login(user.email, user.password);
     if (!loggeduser.verified)
       return res
-        .status(400)
-        .json(successRes(400, null, "Account is not verified"));
-    const isAccepted = await doctorStore.isAccepted(user.email);
-    if (!(await isAccepted.accepted_status)) {
-      return res
-        .status(200)
-        .json(successRes(200, null, "You are still in the waiting list"));
+        .status(401)
+        .json(successRes(401, null, "Account is not verified"));
+
+    if (loggeduser.role === "doctor") {
+      const isAccepted = await doctorStore.isAccepted(user.email);
+      if (!(await isAccepted.accepted_status)) {
+        return res
+          .status(200)
+          .json(successRes(200, null, "You are still in the waiting list"));
+      }
     }
     const token = jwt.sign({ loggeduser }, process.env.TOKEN_SERCRET, {
       expiresIn: "30m",

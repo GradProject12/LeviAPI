@@ -62,7 +62,7 @@ class UserStore {
 
   async isVerified(email) {
     try {
-      const sql = "SELECT * FROM users WHERE email=($1)";
+      const sql = "SELECT verified,role FROM users WHERE email=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [email]);
       conn.release();
