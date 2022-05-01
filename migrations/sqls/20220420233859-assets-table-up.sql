@@ -3,7 +3,7 @@ CREATE TABLE assets (
     user_id INTEGER NOT NULL,
     type VARCHAR(200) CHECK (type IN ('post','message')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (user_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 INSERT INTO assets (asset_id,user_id,type) VALUES (111,700,'post');

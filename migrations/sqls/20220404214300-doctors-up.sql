@@ -7,7 +7,7 @@ CREATE TABLE doctors (
     clinic_phone_number VARCHAR,
     national_id bigint NOT NULL,
     working_schedule json,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    accepted_status BOOLEAN DEFAULT FALSE NOT NULL,
     FOREIGN KEY (doctor_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 

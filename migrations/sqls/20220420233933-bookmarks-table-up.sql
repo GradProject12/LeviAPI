@@ -3,8 +3,8 @@ CREATE TABLE bookmarks (
     user_id INTEGER NOT NULL,
     asset_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (asset_id) REFERENCES assets (asset_id),
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (asset_id) REFERENCES assets (asset_id) ON DELETE CASCADE,
     UNIQUE (user_id,asset_id)
 );
 

@@ -1,7 +1,6 @@
 CREATE TABLE parents (
     parent_id SERIAL PRIMARY KEY,
     doctor_id INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES users (user_id) ON DELETE CASCADE
 

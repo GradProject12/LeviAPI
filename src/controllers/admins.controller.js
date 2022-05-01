@@ -10,8 +10,8 @@ const index = async (_req, res) => {
     const admins = await store.index();
     res.status(200).json(successRes(200, admins));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -20,8 +20,8 @@ const show = async (req, res) => {
     const admin = await store.show(req.params.id);
     res.status(200).json(successRes(200, admin));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -57,8 +57,8 @@ const create = async (req, res) => {
       })
     );
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 const update = async (req, res) => {
@@ -82,8 +82,8 @@ const update = async (req, res) => {
     const adminn = await store.update(admin, req.params.id);
     res.status(200).json(successRes(200, adminn));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -92,8 +92,8 @@ const remove = async (req, res) => {
     const admin = await store.delete(req.params.id);
     res.status(200).json(successRes(200, admin));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -113,8 +113,21 @@ const authenticate = async (req, res) => {
         successRes(200, { username: adminn.username, role: adminn.role, token })
       );
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
+const acceptDoctor = async (req, res) => {
+  try {
+    await store.acceptDoctor(req.params.doctor_id);
+    res.status(200).json(successRes(200, null,"Doctor is confirmed successfully"));
+  } catch (error) {
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -125,4 +138,5 @@ module.exports = {
   update,
   remove,
   authenticate,
+  acceptDoctor,
 };

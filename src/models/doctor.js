@@ -145,6 +145,20 @@ class DoctorStore {
       throw new Error(error.message);
     }
   }
+
+  async isAccepted(email) {
+    try {
+      const sql = "SELECT accepted_status FROM (SELECT * FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE email=($1)";
+      const conn = await client.connect();
+      const result = await conn.query(sql, [email]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("doctor is not found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = DoctorStore;

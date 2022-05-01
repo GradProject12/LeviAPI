@@ -107,12 +107,9 @@ class AdminStore {
   async authenticate(username, password) {
     try {
       const sql = "SELECT * FROM admins WHERE username=($1)";
-      // const sql2 =
-      //   "UPDATE users SET last_login=(to_timestamp($1/ 1000.0)) where username=($2)";
       const conn = await client.connect();
       const result = await conn.query(sql, [username]);
       conn.release();
-      // await conn.query(sql2, [Date.now(), username]);
       if (result.rows.length) {
         const admin = result.rows[0];
         console.log(admin);
@@ -122,6 +119,20 @@ class AdminStore {
       }
       throw new Error("username not found");
     } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async acceptDoctor(doctor_id) {
+    try {
+      const sql =
+        "UPDATE doctors SET accepted_status=($1) WHERE doctor_id=($2) RETURNING * ";
+      const conn = await client.connect();
+      const result = await conn.query(sql, [true, doctor_id]);
+      conn.release();
+      return result.rows[0];
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
       throw new Error(error.message);
     }
   }

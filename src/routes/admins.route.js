@@ -8,7 +8,8 @@ router.get("/", verifyAuthToken, adminController.index);
 router.get("/:id", verifyAuthToken, adminController.show);
 router.put("/:id", verifyAuthToken, adminController.update);
 router.delete("/:id", verifyAuthToken, adminController.remove);
-router.post("/", verifyAuthToken,adminController.create);
+router.post("/", verifyAuthToken, adminController.create);
 router.post("/auth", adminController.authenticate);
+router.post("/confirm/:doctor_id", verifyAuthToken, adminController.acceptDoctor);
 
 module.exports = router;

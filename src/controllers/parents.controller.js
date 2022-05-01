@@ -15,8 +15,8 @@ const index = async (_req, res) => {
       .status(200)
       .json(successRes(200, res.data, undefined, res.paginatedResult));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -26,8 +26,8 @@ const show = async (req, res) => {
     const { user_id, password, verified, secret, ...rest } = parent;
     res.status(200).json(successRes(200, rest));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -52,8 +52,8 @@ const update = async (req, res) => {
       .status(200)
       .json(successRes(200, parent2, "Account is updated successfully"));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -64,8 +64,8 @@ const remove = async (req, res) => {
       .status(200)
       .json(successRes(200, null, "Account is removed successfully"));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 

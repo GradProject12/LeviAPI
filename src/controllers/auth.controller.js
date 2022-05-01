@@ -163,6 +163,12 @@ exports.login = async (req, res) => {
       error.code = 422;
       throw error;
     }
+    const isAccepted = await doctorStore.isAccepted(user.email);
+    if (!(await isAccepted.accepted_status)) {
+      return res
+        .status(200)
+        .json(successRes(200, null, "You are still in the waiting list"));
+    }
     const loggeduser = await userStore.login(user.email, user.password);
     if (!loggeduser.verified)
       return res

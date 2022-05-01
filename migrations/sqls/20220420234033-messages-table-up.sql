@@ -5,7 +5,7 @@ CREATE TABLE messages (
     chat_id INTEGER NOT NULL,
     read_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (chat_id) REFERENCES chats (chat_id)
+    FOREIGN KEY (chat_id) REFERENCES chats (chat_id) ON DELETE CASCADE
 );
 
 INSERT INTO messages (message_id, body, chat_id) VALUES (1111,'asdasd',1);
