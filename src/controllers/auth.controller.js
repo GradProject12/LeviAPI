@@ -354,3 +354,36 @@ exports.resetPassword = async (req, res) => {
     res.json(errorRes(400, error.message));
   }
 };
+
+exports.changePassword = async (req, res) => {
+  const { old_password, new_password, confirm_password } = req.body;
+  try {
+    if (!old_password) {
+      const error = new Error("old password is missing");
+      error.code = 422;
+      throw error;
+    }
+    if (!new_password) {
+      const error = new Error("new password is missing");
+      error.code = 422;
+      throw error;
+    }
+    if (!confirm_password) {
+      const error = new Error("confirm password is missing");
+      error.code = 422;
+      throw error;
+    }
+    if (new_password !== confirm_password)
+      res.status(400).json(errorRes(400, "Password doesn't match!"));
+    await userStore.checkOldPassword(req.params.user_id, old_password);
+    await userStore.changePassword(new_password, req.params.user_id);
+    return res
+      .status(200)
+      .json(successRes(200, null, "Password changed successfully"));
+  } catch (error) {
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};

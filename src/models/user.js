@@ -132,6 +132,41 @@ class UserStore {
       throw new Error(error.message);
     }
   }
+
+  async checkOldPassword(user_id, old_password) {
+    try {
+      const sql = "SELECT password FROM users WHERE user_id=($1)";
+      const conn = await client.connect();
+      const result = await conn.query(sql, [user_id]);
+      conn.release();
+      if (result.rows.length) {
+        const { password } = result.rows[0];
+        if (bcrypt.compareSync(old_password + BCRYPT_PASSWORD, password))
+          return password;
+        else throw new Error("old password is incorrect!");
+      } else throw new Error("user is not found");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async changePassword(new_password, user_id) {
+    try {
+      const sql =
+        "UPDATE users SET password=($1) WHERE user_id=($2) RETURNING * ";
+      const conn = await client.connect();
+      const hash = bcrypt.hashSync(
+        new_password + BCRYPT_PASSWORD,
+        parseInt(SALT_ROUNDS)
+      );
+      const result = await conn.query(sql, [hash, user_id]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("email address not exists");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = UserStore;

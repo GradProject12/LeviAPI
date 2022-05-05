@@ -11,5 +11,6 @@ router.post("/send-code", authController.sendCode);
 router.post("/forgetpassword", authController.forgetPassword);
 router.post("/verifyreset", authController.verifyPasswordReset);
 router.post("/resetpassword", authController.resetPassword);
+router.post("/change-password/:user_id", authController.changePassword);
 
 module.exports = router;
