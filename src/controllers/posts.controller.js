@@ -5,7 +5,7 @@ const { deleteFile } = require("../services/helpers");
 
 const index = async (req, res) => {
   try {
-    if (!res.data.length)
+    if (!res.data)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
     res
       .status(200)

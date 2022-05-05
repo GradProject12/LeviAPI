@@ -6,7 +6,7 @@ const store = new DoctorStore();
 
 const index = async (_req, res) => {
   try {
-    if (!res.data.length)
+    if (!res.data)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
     res
       .status(200)

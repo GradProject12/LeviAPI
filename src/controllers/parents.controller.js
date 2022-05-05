@@ -1,15 +1,12 @@
 const ParentStore = require("../models/parent");
-const jwt = require("jsonwebtoken");
 const { successRes, errorRes } = require("../services/response");
 const validator = require("validator");
-const speakeasy = require("speakeasy");
-const { sendMail } = require("../services/helpers");
 
 const store = new ParentStore();
 
 const index = async (_req, res) => {
   try {
-    if (!res.data.length)
+    if (!res.data)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
     res
       .status(200)

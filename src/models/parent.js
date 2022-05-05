@@ -7,8 +7,14 @@ const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 class ParentStore {
   async index(params) {
     try {
-      const sql =
-        "SELECT *,COUNT(*) OVER() AS total_count FROM users JOIN parents on users.user_id=parents.parent_id ORDER BY ($1) OFFSET ($2) LIMIT ($3)";
+      const sql = `SELECT
+      (SELECT COUNT(*) 
+       FROM users
+      ) as count, 
+      (SELECT json_agg(t.*) FROM (
+          SELECT * FROM users
+          JOIN parents on users.user_id=parents.parent_id ORDER BY ($1) OFFSET ($2) LIMIT ($3)
+      ) AS t) AS rows `
       const conn = await client.connect();
       const result = await conn.query(sql, [
         params.filter,
@@ -16,7 +22,7 @@ class ParentStore {
         params.per_page,
       ]);
       conn.release();
-      return result.rows;
+      return result.rows[0];
     } catch (error) {
       throw new Error(error.message);
     }

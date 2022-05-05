@@ -7,8 +7,14 @@ const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env;
 class DoctorStore {
   async index(params) {
     try {
-      const sql =
-        "SELECT *,COUNT(*) OVER() AS total_count FROM users  JOIN doctors on users.user_id=doctors.doctor_id ORDER BY ($1) OFFSET ($2) LIMIT ($3)";
+      const sql = `SELECT
+      (SELECT COUNT(*) 
+       FROM users
+      ) as count, 
+      (SELECT json_agg(t.*) FROM (
+          SELECT * FROM users
+          JOIN doctors on users.user_id=doctors.doctor_id ORDER BY ($1) OFFSET ($2) LIMIT ($3)
+      ) AS t) AS rows `;
       const conn = await client.connect();
       const result = await conn.query(sql, [
         params.filter,
@@ -16,7 +22,7 @@ class DoctorStore {
         params.per_page,
       ]);
       conn.release();
-      return result.rows;
+      return result.rows[0];
     } catch (error) {
       throw new Error(error.message);
     }
@@ -148,7 +154,8 @@ class DoctorStore {
 
   async isAccepted(email) {
     try {
-      const sql = "SELECT accepted_status FROM (SELECT * FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE email=($1)";
+      const sql =
+        "SELECT accepted_status FROM (SELECT * FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE email=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [email]);
       conn.release();

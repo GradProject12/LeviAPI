@@ -6,8 +6,8 @@ exports.pagination = (model) => async (req, res, next) => {
   };
   const { per_page, page } = params;
 
-  const items = await model.index(params);
-  const total_count = (items.length && items[0].total_count) || 0;
+  const {count,rows} = await model.index(params);
+  const total_count = (count && count) || 0;
   const page_count = Math.ceil(total_count / per_page) || 0;
   const meta = {
     links: [
@@ -32,8 +32,7 @@ exports.pagination = (model) => async (req, res, next) => {
     hasNextPage: page * per_page < total_count,
     remaning_page:page_count-page
   };
-  data = [...items];
   res.paginatedResult = meta;
-  res.data = data;
+  res.data = rows;
   next();
 };

@@ -4,11 +4,17 @@ const { stringBetweenParentheses } = require("../services/helpers");
 class PostStore {
   async index(params) {
     try {
-      const sql =
-        `SELECT us.user_id,us.profile_image,us.full_name,pos.post_id,pos.body,pos.created_at,COUNT(*) OVER() AS total_count FROM posts AS pos 
+      const sql = `SELECT
+        (SELECT COUNT(*) 
+         FROM posts
+        ) as count, 
+        (SELECT json_agg(t.*) FROM (
+            SELECT * FROM posts
+            AS pos 
         JOIN assets AS ass ON pos.post_id=ass.asset_id
         JOIN users AS us ON ass.user_id=us.user_id 
-        ORDER BY ($1) OFFSET ($2) LIMIT ($3)`;
+        ORDER BY ($1) OFFSET ($2) LIMIT ($3)
+        ) AS t) AS rows `;
       const conn = await client.connect();
       const result = await conn.query(sql, [
         params.filter,
@@ -16,7 +22,7 @@ class PostStore {
         params.per_page,
       ]);
       conn.release();
-      return result.rows;
+      return result.rows[0];
     } catch (error) {
       throw new Error(error.message);
     }
