@@ -21,7 +21,7 @@ class ColorStore {
       const result = await conn.query(sql, [id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("color is not found");
+      else throw new Error("Color is not found");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
       throw new Error(error.message);
@@ -53,9 +53,9 @@ class ColorStore {
       const result = await conn.query(sql, [color.name, color.image, id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("color is not found");
+      else throw new Error("Color is not found");
     } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "22P02") throw new Error(`ID must be integer`);
 
       if (error.code === "23505")
         throw new Error(
@@ -73,9 +73,9 @@ class ColorStore {
       const result = await conn.query(sql, [id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("color is not found");
+      else throw new Error("Color is not found");
     } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "22P02") throw new Error(`ID must be integer`);
       throw new Error(error.message);
     }
   }

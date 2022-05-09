@@ -5,10 +5,13 @@ const { successRes, errorRes } = require("../services/response");
 const index = async (_req, res) => {
   try {
     const colors = await store.index();
-    res.status(200).json(successRes(200, colors));
+    if (colors.length) res.status(200).json(successRes(200, colors));
+    res.status(200).json(successRes(200, null, "No data exist!"));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -17,8 +20,10 @@ const show = async (req, res) => {
     const color = await store.show(req.params.id);
     res.status(200).json(successRes(200, color));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -28,12 +33,18 @@ const create = async (req, res) => {
     image: req.body.image,
   };
   try {
-    if (!color.name) throw new Error("name is missing");
+    if (!color.name) {
+      const error = new Error("Color name is missing");
+      error.code = 422;
+      throw error;
+    }
     const newcolor = await store.create(color);
     res.status(200).json(successRes(200, newcolor));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 const update = async (req, res) => {
@@ -42,11 +53,18 @@ const update = async (req, res) => {
     image: req.body.image,
   };
   try {
+    if (!color.name && !color.image) {
+      const error = new Error("No data is entered!");
+      error.code = 422;
+      throw error;
+    }
     const newcolor = await store.update(color, req.params.id);
     res.status(200).json(successRes(200, newcolor));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
@@ -55,8 +73,10 @@ const remove = async (req, res) => {
     const color = await store.delete(req.params.id);
     res.status(200).json(successRes(200, color));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
   }
 };
 
