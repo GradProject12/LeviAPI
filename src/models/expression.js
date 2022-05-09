@@ -16,14 +16,14 @@ class ExpressionStore {
 
   async show(id) {
     try {
-      const sql = "SELECT * FROM expressions WHERE id=($1)";
+      const sql = "SELECT * FROM expressions WHERE expression_id=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("expression is not found");
+      else throw new Error("Expression is not found");
     } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "22P02") throw new Error(`ID must be integer`);
       throw new Error(error.message);
     }
   }
@@ -52,7 +52,7 @@ class ExpressionStore {
   async update(expression, id) {
     try {
       const sql =
-        "UPDATE expressions SET status=COALESCE($1,status), sound=COALESCE($2,sound) where id=($3) RETURNING * ";
+        "UPDATE expressions SET status=COALESCE($1,status), sound=COALESCE($2,sound) where expression_id=($3) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         expression.status,
@@ -61,9 +61,9 @@ class ExpressionStore {
       ]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("expression is not found");
+      else throw new Error("Expression is not found");
     } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "22P02") throw new Error(`ID must be integer`);
 
       if (error.code === "23505")
         throw new Error(
@@ -76,14 +76,14 @@ class ExpressionStore {
   }
   async delete(id) {
     try {
-      const sql = "DELETE FROM expressions WHERE id=($1) RETURNING * ";
+      const sql = "DELETE FROM expressions WHERE expression_id=($1) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("expression is not found");
+      else throw new Error("Expression is not found");
     } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "22P02") throw new Error(`ID must be integer`);
       throw new Error(error.message);
     }
   }

@@ -39,7 +39,7 @@ const create = async (req, res) => {
       throw error;
     }
     const newcolor = await store.create(color);
-    res.status(200).json(successRes(200, newcolor));
+    res.status(200).json(successRes(200, null,'Color updated successfully!'));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -58,8 +58,8 @@ const update = async (req, res) => {
       error.code = 422;
       throw error;
     }
-    const newcolor = await store.update(color, req.params.id);
-    res.status(200).json(successRes(200, newcolor));
+    await store.update(color, req.params.id);
+    res.status(200).json(successRes(200, null,'Color updated successfully!'));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -70,8 +70,8 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const color = await store.delete(req.params.id);
-    res.status(200).json(successRes(200, color));
+    await store.delete(req.params.id);
+    res.status(200).json(successRes(200, null,'Color deleted Successfully!'));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
