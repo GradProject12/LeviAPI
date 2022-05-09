@@ -54,7 +54,7 @@ class AnimalStore {
   async update(animal, id) {
     try {
       const sql =
-        "UPDATE animals SET name=COALESCE($1,name), picture=COALESCE($2,picture), sound=COALESCE($3,sound), spelled=COALESCE($4,spelled) where id=($5) RETURNING * ";
+        "UPDATE animals SET name=COALESCE($1,name), picture=COALESCE($2,picture), sound=COALESCE($3,sound), spelled=COALESCE($4,spelled) where animal_id=($5) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [
         animal.name,
@@ -80,7 +80,7 @@ class AnimalStore {
   }
   async delete(id) {
     try {
-      const sql = "DELETE FROM animals WHERE id=($1) RETURNING * ";
+      const sql = "DELETE FROM animals WHERE animal_id=($1) RETURNING * ";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
