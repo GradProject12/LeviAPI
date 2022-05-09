@@ -40,8 +40,8 @@ const create = async (req, res) => {
       error.code = 422;
       throw error;
     }
-    const newanimal = await store.create(animal);
-    res.status(200).json(successRes(200, newanimal));
+    await store.create(animal);
+    res.status(200).json(successRes(200, null,'Animal created successfully!'));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -62,8 +62,8 @@ const update = async (req, res) => {
       error.code = 422;
       throw error;
     }
-    const newanimal = await store.update(animal, req.params.id);
-    res.status(200).json(successRes(200, newanimal));
+    await store.update(animal, req.params.id);
+    res.status(200).json(successRes(200, null,'Animal updated successfully!'));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -74,8 +74,8 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const animal = await store.delete(req.params.id);
-    res.status(200).json(successRes(200, animal));
+    await store.delete(req.params.id);
+    res.status(200).json(successRes(200, null,'Animal deleted successfully!'));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
