@@ -16,12 +16,12 @@ class AnimalStore {
 
   async show(id) {
     try {
-      const sql = "SELECT * FROM animals WHERE id=($1)";
+      const sql = "SELECT * FROM animals WHERE animal_id=($1)";
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("animal is not found");
+      else throw new Error("Animal is not found");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
       throw new Error(error.message);
@@ -65,9 +65,9 @@ class AnimalStore {
       ]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("animal is not found");
+      else throw new Error("Animal is not found");
     } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "22P02") throw new Error(`ID must be integer`);
 
       if (error.code === "23505")
         throw new Error(
@@ -85,9 +85,9 @@ class AnimalStore {
       const result = await conn.query(sql, [id]);
       conn.release();
       if (result.rows.length) return result.rows[0];
-      else throw new Error("animal is not found");
+      else throw new Error("Animal is not found");
     } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "22P02") throw new Error(`ID must be integer`);
       throw new Error(error.message);
     }
   }

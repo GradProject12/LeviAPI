@@ -3,5 +3,6 @@ CREATE TABLE animals (
     name VARCHAR NOT NULL,
     picture VARCHAR,
     sound VARCHAR,
-    spelled VARCHAR
+    spelled VARCHAR,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
