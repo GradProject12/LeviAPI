@@ -166,6 +166,39 @@ class DoctorStore {
       throw new Error(error.message);
     }
   }
+
+  async showParents(doctor_id) {
+    try {
+      const sql = `
+          SELECT * FROM users
+          JOIN parents on users.user_id=parents.parent_id WHERE parents.doctor_id=($1) `;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [doctor_id]);
+      conn.release();
+      if (result.rows.length) return result.rows;
+      else throw new Error("No parents found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
+
+  async addParentToDoctor(doctor_id, parent_email) {
+    try {
+      const sql = `UPDATE parents
+      SET doctor_id = ($1)
+      FROM users
+      WHERE parents.parent_id = users.user_id AND users.email=($2) RETURNING *;`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [doctor_id, parent_email]);
+      conn.release();
+      if (result.rows.length) return result.rows;
+      else throw new Error("Email or something is wrong");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = DoctorStore;

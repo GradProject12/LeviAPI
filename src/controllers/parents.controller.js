@@ -66,9 +66,20 @@ const remove = async (req, res) => {
   }
 };
 
+const showParentAnalayses = async (req, res) => {
+  try {
+    const analyses = await store.showParentAnalayses(req.params.parent_id);
+    res.status(200).json(successRes(200, analyses));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
   show,
   update,
   remove,
+  showParentAnalayses,
 };

@@ -71,9 +71,42 @@ const remove = async (req, res) => {
   }
 };
 
+const showParents = async (req, res) => {
+  try {
+    const parents = await store.showParents(req.params.doctor_id);
+    res.status(200).json(successRes(200, parents));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
+const addParentToDoctor = async (req, res) => {
+  try {
+    await store.addParentToDoctor(req.params.doctor_id,req.body.parent_email);
+    res.status(200).json(successRes(200, null,"Parent added successfully."));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
+const removeParentBelongsToDoctor = async (req, res) => {
+  try {
+    await store.removeParentBelongsToDoctor(req.params.doctor_id,req.body.parent_email);
+    res.status(200).json(successRes(200, null,"Parent added successfully."));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
   show,
   update,
   remove,
+  showParents,
+  addParentToDoctor,
+  removeParentBelongsToDoctor
 };

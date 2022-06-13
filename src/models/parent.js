@@ -129,6 +129,24 @@ class ParentStore {
       throw new Error(error.message);
     }
   }
+  
+  async showParentAnalayses(parent_id) {
+    try {
+      const sql =
+        `SELECT * FROM robot_analysis AS ra
+         JOIN robots r ON ra.robot_id=r.robot_id
+         JOIN parents AS p ON r.parent_id=p.parent_id
+         WHERE p.parent_id =($1) ORDER BY ra.created_at DESC`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [parent_id]);
+      conn.release();
+      if (result.rows.length) return result.rows;
+      else throw new Error("Analyses are not found");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
 }
 
 module.exports = ParentStore;
