@@ -170,7 +170,7 @@ class DoctorStore {
   async showParents(doctor_id) {
     try {
       const sql = `
-          SELECT * FROM users
+          SELECT full_name,email,phone,profile_image,parent_id FROM users
           JOIN parents on users.user_id=parents.parent_id WHERE parents.doctor_id=($1) `;
       const conn = await client.connect();
       const result = await conn.query(sql, [doctor_id]);
@@ -194,6 +194,20 @@ class DoctorStore {
       conn.release();
       if (result.rows.length) return result.rows;
       else throw new Error("Email or something is wrong");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
+
+  async checkIfParentIsAdded(parent_email) {
+    try {
+      const sql = `SELECT doctor_id FROM parents AS p JOIN users AS u ON p.parent_id=u.user_id WHERE u.email=($1)`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [parent_email]);
+      conn.release();
+      if (result.rows[0].doctor_id) return true;
+      return false;
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
       throw new Error(error.message);
