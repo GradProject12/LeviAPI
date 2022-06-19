@@ -13,5 +13,7 @@ router.get("/:id", verifyAuthToken, parentController.show);
 router.put("/:id", verifyAuthToken, parentController.update);
 router.delete("/:id", verifyAuthToken, parentController.remove);
 router.get("/:parent_id/analyses", verifyAuthToken, parentController.showParentAnalayses);
+router.get("/:id/doctor/:doctor_id", verifyAuthToken, parentController.showDoctor);
+router.post("/:id/rate", verifyAuthToken, parentController.rateDoctor);
 
 module.exports = router;

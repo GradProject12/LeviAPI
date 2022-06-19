@@ -147,6 +147,48 @@ class ParentStore {
     }
   }
 
+  async showDoctor(doctor_id,parent_id) {
+    try {
+      const sql =
+        `
+        SELECT
+      (SELECT ROUND(AVG(rating)) 
+       FROM doctors_ratings WHERE doctor_id=($1)
+      ) AS rating_average ,
+      (SELECT COUNT(*) FROM doctors_ratings WHERE doctor_id=($1) ) AS reviews_number,
+      (SELECT EXISTS(SELECT 1 FROM doctors_ratings WHERE parent_id=($2))) AS rated,  
+      (SELECT json_agg(t.*) FROM (
+          SELECT * FROM (SELECT doctor_id,full_name,email,phone,
+            profile_image,certificate_image,clinic_location,working_schedule
+             FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE doctor_id=($1)
+      ) AS t) AS rows
+        `
+      const conn = await client.connect();
+      const result = await conn.query(sql, [doctor_id, parent_id]);
+      conn.release();
+      if (result.rows[0].rows) return result.rows[0];
+      else throw new Error("doctor is not found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
+  
+  async rateDoctor(params) {
+    try {
+      const sql =`INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES ($1,$2,$3,$4) RETURNING *`
+      const conn = await client.connect();
+      const result = await conn.query(sql, [params.doctor_id, params.parent_id, params.rating, params.review]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("doctor is not found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "23505") throw new Error(`Doctor is already rated`);
+      throw new Error(error.message);
+    }
+  }
+  
 }
 
 module.exports = ParentStore;

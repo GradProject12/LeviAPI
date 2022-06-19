@@ -17,16 +17,7 @@ const index = async (_req, res) => {
   }
 };
 
-const show = async (req, res) => {
-  try {
-    const doctor = await store.show(req.params.id);
-    const { user_id, password, verified, secret, ...rest } = doctor;
-    res.status(200).json(successRes(200, rest));
-  } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
-  }
-};
+
 
 const update = async (req, res) => {
   const doctor = {
@@ -71,9 +62,9 @@ const remove = async (req, res) => {
   }
 };
 
-const showParents = async (req, res) => {
+const showParentsBelongsToDoctor = async (req, res) => {
   try {
-    const parents = await store.showParents(req.params.doctor_id);
+    const parents = await store.showParentsBelongsToDoctor(req.params.doctor_id);
     res.status(200).json(successRes(200, parents));
   } catch (error) {
     res.status(400);
@@ -114,10 +105,9 @@ const removeParentBelongsToDoctor = async (req, res) => {
 
 module.exports = {
   index,
-  show,
   update,
   remove,
-  showParents,
+  showParentsBelongsToDoctor,
   addParentToDoctor,
   removeParentBelongsToDoctor,
 };

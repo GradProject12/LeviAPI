@@ -28,20 +28,7 @@ class DoctorStore {
     }
   }
 
-  async show(id) {
-    try {
-      const sql =
-        "SELECT * FROM (SELECT * FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE user_id=($1)";
-      const conn = await client.connect();
-      const result = await conn.query(sql, [id]);
-      conn.release();
-      if (result.rows.length) return result.rows[0];
-      else throw new Error("doctor is not found");
-    } catch (error) {
-      if (error.code === "22P02") throw new Error(`id must be integer`);
-      throw new Error(error.message);
-    }
-  }
+  
   async create(doctor) {
     try {
       const addToUsers =
@@ -167,7 +154,7 @@ class DoctorStore {
     }
   }
 
-  async showParents(doctor_id) {
+  async showParentsBelongsToDoctor(doctor_id) {
     try {
       const sql = `
           SELECT full_name,email,phone,profile_image,parent_id FROM users

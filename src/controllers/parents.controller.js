@@ -76,10 +76,40 @@ const showParentAnalayses = async (req, res) => {
   }
 };
 
+const showDoctor = async (req, res) => {
+  const {doctor_id,id} = req.params
+  try {
+    const { rows,rating_average,reviews_number,rated }  = await store.showDoctor(doctor_id,id);
+    res.status(200).json(successRes(200, {...rows[0],rating_average,reviews_number,rated}));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
+const rateDoctor = async (req, res) => {
+  const params = {
+    doctor_id: req.body.doctor_id,
+    parent_id: req.params.id,
+    rating: +req.body.rating,
+    review: req.body.review,
+  }
+  try {
+    if(params.rating >10 || params.rating <0) throw new Error("Please enter rating value in range (0-10)")
+    await store.rateDoctor(params);
+    res.status(200).json(successRes(200,undefined,"Doctor is rated Successfully."));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
   show,
   update,
   remove,
   showParentAnalayses,
+  showDoctor,
+  rateDoctor
 };
