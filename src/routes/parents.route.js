@@ -9,7 +9,7 @@ const { pagination } = require("../services/middleware");
 const store = new parentStore();
 
 router.get("/", verifyAuthToken, pagination(store), parentController.index);
-router.get("/:id", verifyAuthToken, parentController.show);
+router.get("/:id", verifyAuthToken, parentController.showParentInfo);
 router.put("/:id", verifyAuthToken, parentController.update);
 router.delete("/:id", verifyAuthToken, parentController.remove);
 router.get("/:parent_id/analyses", verifyAuthToken, parentController.showParentAnalayses);

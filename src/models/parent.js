@@ -14,7 +14,7 @@ class ParentStore {
       (SELECT json_agg(t.*) FROM (
           SELECT * FROM users
           JOIN parents on users.user_id=parents.parent_id ORDER BY ($1) OFFSET ($2) LIMIT ($3)
-      ) AS t) AS rows `
+      ) AS t) AS rows `;
       const conn = await client.connect();
       const result = await conn.query(sql, [
         params.filter,
@@ -28,7 +28,7 @@ class ParentStore {
     }
   }
 
-  async show(id) {
+  async showParent(id) {
     try {
       const sql =
         "SELECT * FROM (SELECT * FROM users JOIN parents on users.user_id=parents.parent_id) AS users WHERE parent_id=($1)";
@@ -129,11 +129,10 @@ class ParentStore {
       throw new Error(error.message);
     }
   }
-  
+
   async showParentAnalayses(parent_id) {
     try {
-      const sql =
-        `SELECT * FROM robot_analysis AS ra
+      const sql = `SELECT * FROM robot_analysis AS ra
          JOIN robots r ON ra.robot_id=r.robot_id
          JOIN parents AS p ON r.parent_id=p.parent_id
          WHERE p.parent_id =($1) ORDER BY ra.created_at DESC`;
@@ -147,10 +146,9 @@ class ParentStore {
     }
   }
 
-  async showDoctor(doctor_id,parent_id) {
+  async showDoctor(doctor_id, parent_id) {
     try {
-      const sql =
-        `
+      const sql = `
         SELECT
       (SELECT ROUND(AVG(rating)) 
        FROM doctors_ratings WHERE doctor_id=($1)
@@ -162,7 +160,7 @@ class ParentStore {
             profile_image,certificate_image,clinic_location,working_schedule
              FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE doctor_id=($1)
       ) AS t) AS rows
-        `
+        `;
       const conn = await client.connect();
       const result = await conn.query(sql, [doctor_id, parent_id]);
       conn.release();
@@ -173,12 +171,17 @@ class ParentStore {
       throw new Error(error.message);
     }
   }
-  
+
   async rateDoctor(params) {
     try {
-      const sql =`INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES ($1,$2,$3,$4) RETURNING *`
+      const sql = `INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES ($1,$2,$3,$4) RETURNING *`;
       const conn = await client.connect();
-      const result = await conn.query(sql, [params.doctor_id, params.parent_id, params.rating, params.review]);
+      const result = await conn.query(sql, [
+        params.doctor_id,
+        params.parent_id,
+        params.rating,
+        params.review,
+      ]);
       conn.release();
       if (result.rows.length) return result.rows[0];
       else throw new Error("doctor is not found");
@@ -188,7 +191,39 @@ class ParentStore {
       throw new Error(error.message);
     }
   }
-  
+
+  async showParentPosts(parent_id) {
+    try {
+      const sql = `SELECT * FROM posts AS po JOIN assets AS a ON po.post_id=a.asset_id AND a.user_id=($1)`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [parent_id]);
+      conn.release();
+      return result.rows[0];
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
+
+  async showParentInfo(parent_id) {
+    try {
+      const sql = `SELECT
+      (SELECT json_agg(t.*) FROM (SELECT parent_id,full_name,email,phone,profile_image FROM parents AS p JOIN users AS u ON p.parent_id=u.user_id WHERE parent_id=($1)) as t) AS parent, 
+        (SELECT json_agg(t.*) FROM (
+            SELECT doctors.doctor_id,full_name,email,clinic_location,clinic_phone_number
+            ,working_schedule,profile_image,certificate_image FROM users
+            JOIN doctors on users.user_id=doctors.doctor_id JOIN parents AS p ON p.doctor_id=users.user_id WHERE p.parent_id=($1) 
+        ) AS t) AS doctor`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [parent_id]);
+      conn.release();
+      if (result.rows[0].parent) return result.rows[0];
+      else throw new Error("Parent is not found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = ParentStore;

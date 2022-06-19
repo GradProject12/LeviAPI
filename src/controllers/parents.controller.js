@@ -17,9 +17,9 @@ const index = async (_req, res) => {
   }
 };
 
-const show = async (req, res) => {
+const showParent = async (req, res) => {
   try {
-    const parent = await store.show(req.params.id);
+    const parent = await store.showParent(req.params.id);
     const { user_id, password, verified, secret, ...rest } = parent;
     res.status(200).json(successRes(200, rest));
   } catch (error) {
@@ -104,12 +104,25 @@ const rateDoctor = async (req, res) => {
   }
 };
 
+const showParentInfo = async (req, res) => {
+
+  try {
+    const parent=await store.showParentInfo(req.params.id);
+    const doctor=parent.doctor||undefined;
+    res.status(200).json(successRes(200,{...parent.parent[0],doctor}));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
-  show,
+  showParent,
   update,
   remove,
   showParentAnalayses,
   showDoctor,
-  rateDoctor
+  rateDoctor,
+  showParentInfo
 };
