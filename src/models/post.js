@@ -116,7 +116,7 @@ class PostStore {
       const result = await conn.query(sql, [user_id]);
       conn.release();
       if (result.rows.length) return result.rows;
-      else throw new Error("post is not found");
+      else throw new Error("No posts exist");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
       throw new Error(error.message);
