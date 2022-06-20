@@ -32,7 +32,6 @@ const update = async (req, res) => {
   const doctor = {
     email: req.body.email,
     phone: req.body.phone,
-    password: req.body.password,
     profile_image: req.body.profile_image,
     clinic_location: req.body.clinic_location,
     working_schedule: req.body.working_schedule,
@@ -40,8 +39,6 @@ const update = async (req, res) => {
   try {
     if (doctor.email && !validator.isEmail(doctor.email))
       throw new Error("email address is not valid ");
-    if (doctor.password && doctor.password.length < 8)
-      throw new Error("password must be at least 8 characters ");
     if (doctor.image && !validator.isURL(doctor.image, []))
       throw new Error("image path is not valid");
     if (

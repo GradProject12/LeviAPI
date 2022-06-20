@@ -89,18 +89,13 @@ class DoctorStore {
   async update(doctor, id) {
     try {
       const updateUser =
-        "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), password=COALESCE($3,password), profile_image=COALESCE($4,profile_image) WHERE user_id=($5) RETURNING *";
+        "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), profile_image=COALESCE($3,profile_image) WHERE user_id=($4) RETURNING *";
       const updateDoctor =
         "UPDATE doctors SET clinic_location=COALESCE($1,clinic_location),  working_schedule=COALESCE($2,working_schedule) where doctor_id=($3) RETURNING * ";
       const conn = await client.connect();
-      const hash = bcrypt.hashSync(
-        doctor.password + BCRYPT_PASSWORD,
-        parseInt(SALT_ROUNDS)
-      );
       const result1 = await conn.query(updateUser, [
         doctor.email,
         doctor.phone,
-        hash,
         doctor.profile_image,
         id,
       ]);
@@ -115,7 +110,9 @@ class DoctorStore {
         return { doctor_id: user_id, ...rest, ...result2.rows[0] };
       else throw new Error("doctor is not found");
     } catch (error) {
+      if (error.code === "22P02" && error.routine==='json_ereport_error') throw new Error(`Working Schedule mus be of type json`);
       if (error.code === "22P02") throw new Error(`id must be integer`);
+      console.log(error)
 
       if (error.code === "23505")
         throw new Error(
