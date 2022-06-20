@@ -30,12 +30,9 @@ const showParent = async (req, res) => {
 
 const update = async (req, res) => {
   const parent = {
-    full_name: req.body.full_name,
     email: req.body.email,
     phone: req.body.phone,
-    password: req.body.password,
     profile_image: req.body.profile_image,
-    doctor_id: req.body.doctor_id,
   };
   try {
     if (parent.email && !validator.isEmail(parent.email))
@@ -44,10 +41,10 @@ const update = async (req, res) => {
       throw new Error("password must be at least 8 characters ");
     if (parent.profile_image && !validator.isURL(parent.profile_image, []))
       throw new Error("image path is not valid");
-    const parent2 = await store.update(parent, req.params.id);
+    await store.update(parent, req.params.id);
     res
       .status(200)
-      .json(successRes(200, parent2, "Account is updated successfully"));
+      .json(successRes(200, undefined, "Account is updated successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -77,12 +74,15 @@ const showParentAnalayses = async (req, res) => {
 };
 
 const showDoctor = async (req, res) => {
-  const {doctor_id,id} = req.params
+  const { doctor_id, id } = req.params;
   try {
-    const { rows,rating_average,reviews_number,rated }  = await store.showDoctor(doctor_id,id);
-    const {working_schedule,...doctor}=rows[0]
-    doctor.working_schedule=Object.values(working_schedule)
-    res.status(200).json(successRes(200, {doctor,rating_average,reviews_number,rated}));
+    const { rows, rating_average, reviews_number, rated } =
+      await store.showDoctor(doctor_id, id);
+    const { working_schedule, ...doctor } = rows[0];
+    doctor.working_schedule = Object.values(working_schedule);
+    res
+      .status(200)
+      .json(successRes(200, { doctor, rating_average, reviews_number, rated }));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -95,11 +95,14 @@ const rateDoctor = async (req, res) => {
     parent_id: req.params.id,
     rating: +req.body.rating,
     review: req.body.review,
-  }
+  };
   try {
-    if(params.rating >10 || params.rating <0) throw new Error("Please enter rating value in range (0-10)")
+    if (params.rating > 10 || params.rating < 0)
+      throw new Error("Please enter rating value in range (0-10)");
     await store.rateDoctor(params);
-    res.status(200).json(successRes(200,undefined,"Doctor is rated Successfully."));
+    res
+      .status(200)
+      .json(successRes(200, undefined, "Doctor is rated Successfully."));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -107,11 +110,10 @@ const rateDoctor = async (req, res) => {
 };
 
 const showParentInfo = async (req, res) => {
-
   try {
-    const parent=await store.showParentInfo(req.params.id);
-    const doctor=parent.doctor||undefined;
-    res.status(200).json(successRes(200,{...parent.parent[0],doctor}));
+    const parent = await store.showParentInfo(req.params.id);
+    const doctor = parent.doctor || undefined;
+    res.status(200).json(successRes(200, { ...parent.parent[0], doctor }));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -126,5 +128,5 @@ module.exports = {
   showParentAnalayses,
   showDoctor,
   rateDoctor,
-  showParentInfo
+  showParentInfo,
 };

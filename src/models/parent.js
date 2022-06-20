@@ -81,28 +81,16 @@ class ParentStore {
   async update(parent, id) {
     try {
       const updateUser =
-        "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), password=COALESCE($3,password), profile_image=COALESCE($4,profile_image) WHERE user_id=($5) RETURNING *";
-      const updateParent =
-        "UPDATE parents SET doctor_id=COALESCE($1,doctor_id) where parent_id=($2) RETURNING * ";
-
+        "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), profile_image=COALESCE($3,profile_image) WHERE user_id=($4) RETURNING *";
       const conn = await client.connect();
-      const hash = bcrypt.hashSync(
-        parent.password + BCRYPT_PASSWORD,
-        parseInt(SALT_ROUNDS)
-      );
-      const result1 = await conn.query(updateUser, [
+      const result = await conn.query(updateUser, [
         parent.email,
         parent.phone,
-        hash,
         parent.profile_image,
         id,
       ]);
-      const result2 = await conn.query(updateParent, [parent.doctor_id, id]);
       conn.release();
-      const { user_id, ...rest } = result1.rows[0];
-
-      if (result1.rows.length && result2.rows.length)
-        return { parent_id: user_id, ...rest, ...result2.rows[0] };
+      if (result.rows.length) return result.rows[0];
       else throw new Error("parent is not found");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
