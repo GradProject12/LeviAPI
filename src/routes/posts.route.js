@@ -11,6 +11,7 @@ const store = new postStore();
 
 router.get("/", verifyAuthToken, pagination(store), postController.index);
 router.get("/:post_id", verifyAuthToken, postController.show);
+router.get("/user/:user_id", verifyAuthToken, postController.showPostsBelongToUser);
 router.put("/:post_id", verifyAuthToken, fileUploadd("file"), postController.update);
 router.delete("/:post_id", verifyAuthToken, postController.remove);
 router.post("/:user_id", verifyAuthToken, fileUploadd("file"), postController.create);

@@ -105,10 +105,21 @@ const remove = async (req, res) => {
   }
 };
 
+const showPostsBelongToUser = async (req, res) => {
+  try {
+    const posts = await store.showPostsBelongToUser(req.params.user_id);
+    res.status(200).json(successRes(200,posts));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
   show,
   create,
   update,
   remove,
+  showPostsBelongToUser
 };
