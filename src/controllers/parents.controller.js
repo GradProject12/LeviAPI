@@ -80,7 +80,9 @@ const showDoctor = async (req, res) => {
   const {doctor_id,id} = req.params
   try {
     const { rows,rating_average,reviews_number,rated }  = await store.showDoctor(doctor_id,id);
-    res.status(200).json(successRes(200, {...rows[0],rating_average,reviews_number,rated}));
+    const {working_schedule,...doctor}=rows[0]
+    doctor.working_schedule=Object.values(working_schedule)
+    res.status(200).json(successRes(200, {doctor,rating_average,reviews_number,rated}));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));

@@ -17,7 +17,16 @@ const index = async (_req, res) => {
   }
 };
 
-
+const showDoctorProfile = async (req, res) => {
+  try {
+    const { working_schedule,...doctor} = await store.showDoctorProfile(req.params.id);
+    doctor.working_schedule=Object.values(working_schedule)
+    res.status(200).json(successRes(200,doctor));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
 
 const update = async (req, res) => {
   const doctor = {
@@ -107,6 +116,7 @@ module.exports = {
   index,
   update,
   remove,
+  showDoctorProfile,
   showParentsBelongsToDoctor,
   addParentToDoctor,
   removeParentBelongsToDoctor,

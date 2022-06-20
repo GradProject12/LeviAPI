@@ -28,6 +28,21 @@ class DoctorStore {
     }
   }
 
+  async showDoctorProfile(id) {
+    try {
+      const sql =
+        `SELECT * FROM (SELECT full_name, email, phone, profile_image, created_at, doctor_id, certificate_image, clinic_location, clinic_phone_number, working_schedule
+           FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE doctor_id=($1)`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [id]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("doctor is not found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
   
   async create(doctor) {
     try {
