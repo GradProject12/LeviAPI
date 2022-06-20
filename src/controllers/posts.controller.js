@@ -30,7 +30,9 @@ const create = async (req, res) => {
   const post = {
     user_id: req.params.user_id,
     body: req.body.body,
+    private:req.body.private==='true' || req.body.private==='True'
   };
+  console.table(post)
   try {
     if (!post.body) {
       const error = new Error("Post's body is missing");

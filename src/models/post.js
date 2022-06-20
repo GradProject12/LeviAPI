@@ -49,7 +49,7 @@ class PostStore {
       const sql1 =
         "INSERT INTO assets(user_id, type) VALUES($1, $2) RETURNING *";
       const sql2 =
-        "INSERT INTO posts(post_id,body,file,type) VALUES($1, $2,$3,$4) RETURNING *";
+        "INSERT INTO posts(post_id,body,file,type,private) VALUES($1, $2,$3,$4,$5) RETURNING *";
       const conn = await client.connect();
       const result1 = await conn.query(sql1, [post.user_id, "post"]);
       const result2 = await conn.query(sql2, [
@@ -57,6 +57,7 @@ class PostStore {
         post.body,
         post.file,
         post.type,
+        post.private
       ]);
       conn.release();
       return result2.rows[0];
