@@ -9,7 +9,7 @@ class PostStore {
          FROM posts
         ) as count, 
         (SELECT json_agg(t.*) FROM (
-            SELECT * FROM posts
+            SELECT pos.post_id, pos.body, pos.file, pos.private, pos.created_at, us.user_id, us.full_name, us.email, us.profile_image FROM posts
             AS pos 
         JOIN assets AS ass ON pos.post_id=ass.asset_id
         JOIN users AS us ON ass.user_id=us.user_id 
