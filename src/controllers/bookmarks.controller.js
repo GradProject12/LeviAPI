@@ -8,7 +8,7 @@ const fetchAllBookmarks = async (req, res) => {
     if (!(type === "message" || type === "post"))
       throw new Error("Boomark type is invaild");
     const bookmarks = await store.fetchAllBookmarks(user_id, type);
-    res.status(200).json(successRes(200, bookmarks));
+    res.status(200).json(successRes(200, bookmarks,"Bookmark fetched successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -22,7 +22,7 @@ const showRelatedMessagesToBookmarkedUser = async (req, res) => {
       user_id,
       bookmarked_user
     );
-    res.status(200).json(successRes(200, bookmark));
+    res.status(200).json(successRes(200, bookmark,"User's messages fetched successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
