@@ -13,11 +13,10 @@ class PostStore {
             AS pos 
         JOIN assets AS ass ON pos.post_id=ass.asset_id
         JOIN users AS us ON ass.user_id=us.user_id 
-        ORDER BY ($1) OFFSET ($2) LIMIT ($3)
-        ) AS t) AS rows `;
+        ORDER BY created_at DESC OFFSET ($1) LIMIT ($2)
+        ) AS t) AS rows;`;
       const conn = await client.connect();
       const result = await conn.query(sql, [
-        params.filter,
         (params.page - 1) * params.per_page,
         params.per_page,
       ]);
