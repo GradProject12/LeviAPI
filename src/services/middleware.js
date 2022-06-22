@@ -10,20 +10,6 @@ exports.pagination = (model) => async (req, res, next) => {
   const total_count = (count && count) || 0;
   const page_count = Math.ceil(total_count / per_page) || 0;
   const meta = {
-    links: [
-      { self: `${req.baseUrl}?page=${page}` },
-      { first: `${req.baseUrl}?page=1` },
-      {
-        previous:
-          page !== 1 && `${req.baseUrl}?page=${page - 1}`,
-      },
-      {
-        next:
-          page * per_page < total_count &&
-          `${req.baseUrl}?page=${page + 1}`,
-      },
-      { last: `${req.baseUrl}?page=${page_count}` },
-    ],
     total_count: total_count,
     current_page: page,
     limit: per_page,
