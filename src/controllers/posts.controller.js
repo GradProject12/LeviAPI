@@ -6,7 +6,7 @@ const { deleteFile } = require("../services/helpers");
 const index = async (req, res) => {
   try {
     if (!res.data)
-      return res.status(200).json(successRes(200, null, "Nothing exits"));
+      return res.status(400).json(errorRes(400, "Nothing exits",null));
     res
       .status(200)
       .json(successRes(200, res.data, "Posts fetched successfully", res.paginatedResult));
