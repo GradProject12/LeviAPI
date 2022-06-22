@@ -9,7 +9,7 @@ const getAllAnalysisBelongToRobot = async (req, res) => {
     const result = await store.getAllAnalysisBelongToRobot(req.params.robot_id);
     if (!result.length)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
-    res.status(200).json(successRes(200, result));
+    res.status(200).json(successRes(200, result,"Analysis fetched successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
@@ -21,7 +21,7 @@ const showSingleAnalysisBelongToRobot = async (req, res) => {
     const result = await store.showSingleAnalysisBelongToRobot(
       req.params.analysis_id
     );
-    res.status(200).json(successRes(200, result));
+    res.status(200).json(successRes(200, result,"Analyses fetched successfully"));
   } catch (error) {
     res.status(404);
     res.json(errorRes(404, error.message));
