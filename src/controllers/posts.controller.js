@@ -32,7 +32,6 @@ const create = async (req, res) => {
     body: req.body.body,
     private:req.body.private==='true' || req.body.private==='True'
   };
-  console.table(post)
   try {
     if (!post.body) {
       const error = new Error("Post's body is missing");
@@ -56,8 +55,8 @@ const create = async (req, res) => {
     } else if (req.files.length > 1 && imagetypes.test(file))
       post.type = "text_with_album";
 
-    const newpost = await store.create(post);
-    res.status(200).json(successRes(200, newpost));
+    await store.create(post);
+    res.status(200).json(successRes(200, undefined,"Post created successfully."));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -84,7 +83,7 @@ const update = async (req, res) => {
       throw error;
     }
     await store.update(post, req.params.post_id);
-    res.status(200).json(successRes(200, null, "Post is updated successfully"));
+    res.status(200).json(successRes(200, undefined, "Post is updated successfully"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
