@@ -9,7 +9,7 @@ const store = new AdminStore();
 const index = async (_req, res) => {
   try {
     const admins = await store.index();
-    res.status(200).json(successRes(200, admins));
+    res.status(200).json(successRes(200, admins,"Admins fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -19,7 +19,7 @@ const index = async (_req, res) => {
 const show = async (req, res) => {
   try {
     const admin = await store.show(req.params.id);
-    res.status(200).json(successRes(200, admin));
+    res.status(200).json(successRes(200, admin,"Admin fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -55,7 +55,7 @@ const create = async (req, res) => {
         username: admin.username,
         role: admin.role,
         token: token,
-      })
+      },"Admin created successfully")
     );
   } catch (error) {
     res.status(400);
@@ -80,8 +80,8 @@ const update = async (req, res) => {
     if (admin.role && !validator.isIn(admin.role, ["admin", "sub-admin"]))
       throw new Error("please specify correct roll");
 
-    const adminn = await store.update(admin, req.params.id);
-    res.status(200).json(successRes(200, adminn));
+    await store.update(admin, req.params.id);
+    res.status(200).json(successRes(200, null,"Admin updated successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -90,8 +90,8 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const admin = await store.delete(req.params.id);
-    res.status(200).json(successRes(200, admin));
+    await store.delete(req.params.id);
+    res.status(200).json(successRes(200, null,"Admin deleted successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -111,7 +111,7 @@ const authenticate = async (req, res) => {
     res
       .status(200)
       .json(
-        successRes(200, { username: adminn.username, role: adminn.role, token })
+        successRes(200, { username: adminn.username, role: adminn.role, token },"Logged in successfully")
       );
   } catch (error) {
     res.status(400);
