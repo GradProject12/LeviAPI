@@ -9,17 +9,17 @@ const index = async (req, res) => {
       return res.status(200).json(successRes(200, null, "Nothing exits"));
     res
       .status(200)
-      .json(successRes(200, res.data, undefined, res.paginatedResult));
+      .json(successRes(200, res.data, "Posts fetched successfully", res.paginatedResult));
   } catch (error) {
     res.status(400);
-    res.json(errorRes(400, error.message));
+    res.json(errorRes(400, error.message,null));
   }
 };
 
 const show = async (req, res) => {
   try {
     const post = await store.show(req.params.post_id);
-    res.status(200).json(successRes(200, post));
+    res.status(200).json(successRes(200, post,"Post fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -56,7 +56,7 @@ const create = async (req, res) => {
       post.type = "text_with_album";
 
     await store.create(post);
-    res.status(200).json(successRes(200, undefined,"Post created successfully."));
+    res.status(200).json(successRes(200, null,"Post created successfully."));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -83,7 +83,7 @@ const update = async (req, res) => {
       throw error;
     }
     await store.update(post, req.params.post_id);
-    res.status(200).json(successRes(200, undefined, "Post is updated successfully"));
+    res.status(200).json(successRes(200, null, "Post is updated successfully"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -107,7 +107,7 @@ const remove = async (req, res) => {
 const showPostsBelongToUser = async (req, res) => {
   try {
     const posts = await store.showPostsBelongToUser(req.params.user_id);
-    res.status(200).json(successRes(200,posts));
+    res.status(200).json(successRes(200,posts,"Posts fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
