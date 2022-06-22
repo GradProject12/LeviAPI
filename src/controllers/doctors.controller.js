@@ -71,7 +71,7 @@ const remove = async (req, res) => {
 const showParentsBelongsToDoctor = async (req, res) => {
   try {
     const parents = await store.showParentsBelongsToDoctor(req.params.doctor_id);
-    res.status(200).json(successRes(200, parents));
+    res.status(200).json(successRes(200, parents,"Parent's fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
