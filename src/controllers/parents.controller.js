@@ -10,10 +10,10 @@ const index = async (_req, res) => {
       return res.status(200).json(successRes(200, null, "Nothing exits"));
     res
       .status(200)
-      .json(successRes(200, res.data, undefined, res.paginatedResult));
+      .json(successRes(200, res.data, "Parents's fetched successfully", res.paginatedResult));
   } catch (error) {
     res.status(400);
-    res.json(errorRes(400, error.message));
+    res.json(errorRes(400, error.message,null));
   }
 };
 
@@ -21,7 +21,7 @@ const showParent = async (req, res) => {
   try {
     const parent = await store.showParent(req.params.id);
     const { user_id, password, verified, secret, ...rest } = parent;
-    res.status(200).json(successRes(200, rest));
+    res.status(200).json(successRes(200, rest,"Parent fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -44,7 +44,7 @@ const update = async (req, res) => {
     await store.update(parent, req.params.id);
     res
       .status(200)
-      .json(successRes(200, undefined, "Account is updated successfully"));
+      .json(successRes(200, null, "Account is updated successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -66,7 +66,7 @@ const remove = async (req, res) => {
 const showParentAnalayses = async (req, res) => {
   try {
     const analyses = await store.showParentAnalayses(req.params.parent_id);
-    res.status(200).json(successRes(200, analyses));
+    res.status(200).json(successRes(200, analyses,"Analyses fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -82,7 +82,7 @@ const showDoctor = async (req, res) => {
     doctor.working_schedule = Object.values(working_schedule);
     res
       .status(200)
-      .json(successRes(200, { doctor, rating_average, reviews_number, rated }));
+      .json(successRes(200, { doctor, rating_average, reviews_number, rated },"Doctor fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -102,7 +102,7 @@ const rateDoctor = async (req, res) => {
     await store.rateDoctor(params);
     res
       .status(200)
-      .json(successRes(200, undefined, "Doctor is rated Successfully."));
+      .json(successRes(200, null, "Doctor is rated Successfully."));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -113,7 +113,7 @@ const showParentInfo = async (req, res) => {
   try {
     const parent = await store.showParentInfo(req.params.id);
     const doctor = parent.doctor || undefined;
-    res.status(200).json(successRes(200, { ...parent.parent[0], doctor }));
+    res.status(200).json(successRes(200, { ...parent.parent[0], doctor },"Profile fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
