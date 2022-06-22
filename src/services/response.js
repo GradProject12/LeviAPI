@@ -11,12 +11,13 @@ const successRes = (code, data, message, meta) => {
   
 };
 
-const errorRes = (code, message) => {
+const errorRes = (code, message,meta) => {
   return {
     status: "error",
     code: code,
     message: message,
-    data:null
+    data:null,
+    meta:meta
   };
 };
 

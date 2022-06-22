@@ -12,7 +12,7 @@ const index = async (_req, res) => {
     res.status(200).json(successRes(200, admins,"Admins fetched successfully"));
   } catch (error) {
     res.status(400);
-    res.json(errorRes(400, error.message));
+    res.json(errorRes(400, error.message,null));
   }
 };
 
