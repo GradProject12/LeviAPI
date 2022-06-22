@@ -3,10 +3,12 @@ const successRes = (code, data, message, meta) => {
     status: "success",
     code: code,
     message: message,
-    meta:meta
+    meta:meta,
+    data:data
   };
-  if (data) res.data = data;
-  return res;
+
+  return res
+  
 };
 
 const errorRes = (code, message) => {
@@ -14,6 +16,7 @@ const errorRes = (code, message) => {
     status: "error",
     code: code,
     message: message,
+    data:null
   };
 };
 
