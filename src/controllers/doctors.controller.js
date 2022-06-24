@@ -136,6 +136,18 @@ const getDoctorRatings = async (req, res) => {
   }
 };
 
+const getPrivatePosts = async (req, res) => {
+  try {
+    const parents = await store.getPrivatePosts(req.params.doctor_id);
+    res
+      .status(200)
+      .json(successRes(200, parents, "Posts's fetched successfully"));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
   update,
@@ -145,4 +157,5 @@ module.exports = {
   addParentToDoctor,
   removeParentBelongsToDoctor,
   getDoctorRatings,
+  getPrivatePosts,
 };

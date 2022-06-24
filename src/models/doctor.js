@@ -234,6 +234,22 @@ class DoctorStore {
       throw new Error(error.message);
     }
   }
+
+  async getPrivatePosts(doctor_id) {
+    try {
+      const sql = `
+      SELECT * FROM posts P JOIN assets A ON P.post_id=A.asset_id WHERE private=True AND A.user_id=($1); 
+      `;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [doctor_id]);
+      conn.release();
+      if (result.rows.length) return result.rows;
+      else throw new Error("No posts found");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = DoctorStore;

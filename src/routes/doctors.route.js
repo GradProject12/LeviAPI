@@ -37,5 +37,10 @@ router.get(
   verifyAuthToken,
   doctorController.getDoctorRatings
 );
+router.get(
+  "/:doctor_id/posts/private",
+  verifyAuthToken,
+  doctorController.getPrivatePosts
+);
 
 module.exports = router;
