@@ -181,9 +181,13 @@ exports.login = async (req, res) => {
           .json(successRes(401, null, "You are still in the waiting list"));
       }
     }
-    const token = jwt.sign({ loggeduser }, process.env.TOKEN_SERCRET, {
-      expiresIn: "30m",
-    });
+    const token = jwt.sign(
+      { email: loggeduser.email, userId: loggeduser.user_id },
+      process.env.TOKEN_SERCRET,
+      {
+        expiresIn: "30m",
+      }
+    );
     res.status(200).json(
       successRes(
         200,
