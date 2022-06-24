@@ -212,6 +212,24 @@ class ParentStore {
       throw new Error(error.message);
     }
   }
+
+  async getMyDoctorsInfo(parent_id) {
+    try {
+      const sql = `
+      SELECT D.doctor_id,U.full_name,U.profile_image FROM doctors D 
+      JOIN parents P ON d.doctor_id=P.doctor_id
+      JOIN users U ON D.doctor_id=U.user_id
+      WHERE P.parent_id=($1);
+      `;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [parent_id]);
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("You don't have doctor yet!");
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = ParentStore;

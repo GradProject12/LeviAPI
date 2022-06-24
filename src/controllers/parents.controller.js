@@ -143,6 +143,18 @@ const showParentInfo = async (req, res) => {
   }
 };
 
+const getMyDoctorsInfo = async (req, res) => {
+  try {
+    const doctor = await store.getMyDoctorsInfo(req.userId);
+    res
+      .status(200)
+      .json(successRes(200, doctor, "Doctor fetched successfully."));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
   showParent,
@@ -152,4 +164,5 @@ module.exports = {
   showDoctor,
   rateDoctor,
   showParentInfo,
+  getMyDoctorsInfo,
 };

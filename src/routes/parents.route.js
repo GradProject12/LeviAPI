@@ -10,10 +10,19 @@ const store = new parentStore();
 
 router.get("/", verifyAuthToken, pagination(store), parentController.index);
 router.get("/:id", verifyAuthToken, parentController.showParentInfo);
+router.get("/me/my-doctor", verifyAuthToken, parentController.getMyDoctorsInfo);
 router.put("/:id", verifyAuthToken, parentController.update);
 router.delete("/:id", verifyAuthToken, parentController.remove);
-router.get("/:parent_id/analyses", verifyAuthToken, parentController.showParentAnalayses);
-router.get("/:id/doctor/:doctor_id", verifyAuthToken, parentController.showDoctor);
+router.get(
+  "/:parent_id/analyses",
+  verifyAuthToken,
+  parentController.showParentAnalayses
+);
+router.get(
+  "/:id/doctor/:doctor_id",
+  verifyAuthToken,
+  parentController.showDoctor
+);
 router.post("/:id/rate", verifyAuthToken, parentController.rateDoctor);
 
 module.exports = router;
