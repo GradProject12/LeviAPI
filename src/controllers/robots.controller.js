@@ -26,7 +26,7 @@ const show = async (req, res) => {
 
 const create = async (req, res) => {
   const robot = {
-    parent_id: req.body.parent_id,
+    parent_id: req.userId,
     doctor_id: req.body.doctor_id,
   };
   try {
@@ -42,7 +42,7 @@ const create = async (req, res) => {
 };
 const update = async (req, res) => {
   const robot = {
-    parent_id: req.body.parent_id,
+    parent_id: req.userId,
     doctor_id: req.body.doctor_id,
   };
   try {

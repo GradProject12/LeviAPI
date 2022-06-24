@@ -35,7 +35,7 @@ const show = async (req, res) => {
 
 const create = async (req, res) => {
   const post = {
-    user_id: req.params.user_id,
+    user_id: req.userId,
     body: req.body.body,
     private: req.body.private === "true" || req.body.private === "True",
   };
@@ -89,6 +89,12 @@ const update = async (req, res) => {
       error.code = 422;
       throw error;
     }
+    const { user_id } = await store.show(req.params.post_id);
+    if (user_id !== req.userId) {
+      const error = new Error("Not Authorized!");
+      error.code = 401;
+      throw error;
+    }
     await store.update(post, req.params.post_id);
     res.status(200).json(successRes(200, null, "Post is updated successfully"));
   } catch (error) {
@@ -101,9 +107,17 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
+    const { user_id } = await store.show(req.params.post_id);
+    if (user_id !== req.userId) {
+      const error = new Error("Not Authorized!");
+      error.code = 401;
+      throw error;
+    }
     const post = await store.delete(req.params.post_id);
-    const str = post.file[0];
-    deleteFile(str.substring(str.indexOf("upload")));
+    if (post.file) {
+      const str = post.file[0];
+      deleteFile(str.substring(str.indexOf("upload")));
+    }
     res.status(200).json(successRes(200, null, "Post is deleted successfully"));
   } catch (error) {
     res.status(400);
@@ -113,7 +127,7 @@ const remove = async (req, res) => {
 
 const showPostsBelongToUser = async (req, res) => {
   try {
-    const posts = await store.showPostsBelongToUser(req.params.user_id);
+    const posts = await store.showPostsBelongToUser(req.userId);
     res.status(200).json(successRes(200, posts, "Posts fetched successfully"));
   } catch (error) {
     res.status(400);

@@ -10,18 +10,25 @@ const index = async (_req, res) => {
       return res.status(200).json(successRes(200, null, "Nothing exits"));
     res
       .status(200)
-      .json(successRes(200, res.data, "Parents's fetched successfully", res.paginatedResult));
+      .json(
+        successRes(
+          200,
+          res.data,
+          "Parents's fetched successfully",
+          res.paginatedResult
+        )
+      );
   } catch (error) {
     res.status(400);
-    res.json(errorRes(400, error.message,null));
+    res.json(errorRes(400, error.message, null));
   }
 };
 
 const showParent = async (req, res) => {
   try {
-    const parent = await store.showParent(req.params.id);
+    const parent = await store.showParent(req.userId);
     const { user_id, password, verified, secret, ...rest } = parent;
-    res.status(200).json(successRes(200, rest,"Parent fetched successfully"));
+    res.status(200).json(successRes(200, rest, "Parent fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -41,7 +48,7 @@ const update = async (req, res) => {
       throw new Error("password must be at least 8 characters ");
     if (parent.profile_image && !validator.isURL(parent.profile_image, []))
       throw new Error("image path is not valid");
-    await store.update(parent, req.params.id);
+    await store.update(parent, req.userId);
     res
       .status(200)
       .json(successRes(200, null, "Account is updated successfully"));
@@ -53,7 +60,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    await store.delete(req.params.id);
+    await store.delete(req.userId);
     res
       .status(200)
       .json(successRes(200, null, "Account is removed successfully"));
@@ -65,8 +72,10 @@ const remove = async (req, res) => {
 
 const showParentAnalayses = async (req, res) => {
   try {
-    const analyses = await store.showParentAnalayses(req.params.parent_id);
-    res.status(200).json(successRes(200, analyses,"Analyses fetched successfully"));
+    const analyses = await store.showParentAnalayses(req.userId);
+    res
+      .status(200)
+      .json(successRes(200, analyses, "Analyses fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -74,15 +83,21 @@ const showParentAnalayses = async (req, res) => {
 };
 
 const showDoctor = async (req, res) => {
-  const { doctor_id, id } = req.params;
+  const { doctor_id } = req.params;
   try {
     const { rows, rating_average, reviews_number, rated } =
-      await store.showDoctor(doctor_id, id);
+      await store.showDoctor(doctor_id, req.userId);
     const { working_schedule, ...doctor } = rows[0];
     doctor.working_schedule = Object.values(working_schedule);
     res
       .status(200)
-      .json(successRes(200, { doctor, rating_average, reviews_number, rated },"Doctor fetched successfully"));
+      .json(
+        successRes(
+          200,
+          { doctor, rating_average, reviews_number, rated },
+          "Doctor fetched successfully"
+        )
+      );
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -92,7 +107,7 @@ const showDoctor = async (req, res) => {
 const rateDoctor = async (req, res) => {
   const params = {
     doctor_id: req.body.doctor_id,
-    parent_id: req.params.id,
+    parent_id: req.userId,
     rating: +req.body.rating,
     review: req.body.review,
   };
@@ -111,9 +126,17 @@ const rateDoctor = async (req, res) => {
 
 const showParentInfo = async (req, res) => {
   try {
-    const parent = await store.showParentInfo(req.params.id);
+    const parent = await store.showParentInfo(req.userId);
     const doctor = parent.doctor || undefined;
-    res.status(200).json(successRes(200, { ...parent.parent[0], doctor },"Profile fetched successfully"));
+    res
+      .status(200)
+      .json(
+        successRes(
+          200,
+          { ...parent.parent[0], doctor },
+          "Profile fetched successfully"
+        )
+      );
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));

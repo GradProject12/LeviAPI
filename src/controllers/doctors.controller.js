@@ -27,7 +27,7 @@ const index = async (_req, res) => {
 const showDoctorProfile = async (req, res) => {
   try {
     const { working_schedule, ...doctor } = await store.showDoctorProfile(
-      req.params.id
+      req.userId
     );
     doctor.working_schedule = Object.values(working_schedule);
     res
@@ -57,7 +57,7 @@ const update = async (req, res) => {
       !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
     )
       throw new Error("phone number is not valid");
-    const doctorn = await store.update(doctor, req.params.id);
+    const doctorn = await store.update(doctor, req.userId);
     res
       .status(200)
       .json(successRes(200, doctorn, "Account is updated successfully"));
@@ -69,7 +69,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    await store.delete(req.params.id);
+    await store.delete(req.userId);
     res
       .status(200)
       .json(successRes(200, null, "Account is removed successfully"));
@@ -81,9 +81,7 @@ const remove = async (req, res) => {
 
 const showParentsBelongsToDoctor = async (req, res) => {
   try {
-    const parents = await store.showParentsBelongsToDoctor(
-      req.params.doctor_id
-    );
+    const parents = await store.showParentsBelongsToDoctor(req.userId);
     res
       .status(200)
       .json(successRes(200, parents, "Parent's fetched successfully"));
@@ -99,10 +97,7 @@ const addParentToDoctor = async (req, res) => {
     if (isAdded)
       res.status(400).json(errorRes(400, "Parent is already added."));
     else {
-      await store.addParentToDoctor(
-        req.params.doctor_id,
-        req.body.parent_email
-      );
+      await store.addParentToDoctor(req.userId, req.body.parent_email);
       res.status(200).json(successRes(200, null, "Parent added successfully."));
     }
   } catch (error) {
@@ -113,10 +108,7 @@ const addParentToDoctor = async (req, res) => {
 
 const removeParentBelongsToDoctor = async (req, res) => {
   try {
-    await store.removeParentBelongsToDoctor(
-      req.params.doctor_id,
-      req.body.parent_email
-    );
+    await store.removeParentBelongsToDoctor(req.userId, req.body.parent_email);
     res.status(200).json(successRes(200, null, "Parent added successfully."));
   } catch (error) {
     res.status(400);
@@ -138,7 +130,7 @@ const getDoctorRatings = async (req, res) => {
 
 const getPrivatePosts = async (req, res) => {
   try {
-    const parents = await store.getPrivatePosts(req.params.doctor_id);
+    const parents = await store.getPrivatePosts(req.userId);
     res
       .status(200)
       .json(successRes(200, parents, "Posts's fetched successfully"));
