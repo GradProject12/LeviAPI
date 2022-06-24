@@ -6,4 +6,4 @@ CREATE TABLE parents (
 
 );
 
-INSERT INTO parents (parent_id) VALUES (700);
+INSERT INTO parents (parent_id) VALUES (700),(701),(702),(703);

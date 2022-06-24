@@ -10,3 +10,10 @@ CREATE TABLE doctors_ratings (
     CHECK (rating BETWEEN 0 AND 10),
     UNIQUE (doctor_id,parent_id)
 );
+
+
+INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES (500,700,4.5,'dfsasdasd');
+INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES (501,700,4.5,'dfsasdasd');
+INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES (502,701,4.5,'dfsasdasd');
+INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES (503,703,4.5,'dfsasdasd');
+INSERT INTO doctors_ratings (doctor_id,parent_id,rating,review) VALUES (503,702,4.5,'dfsasdasd');

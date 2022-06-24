@@ -10,18 +10,29 @@ const index = async (_req, res) => {
       return res.status(200).json(successRes(200, null, "Nothing exits"));
     res
       .status(200)
-      .json(successRes(200, res.data, "Doctor's fetched successfully", res.paginatedResult));
+      .json(
+        successRes(
+          200,
+          res.data,
+          "Doctor's fetched successfully",
+          res.paginatedResult
+        )
+      );
   } catch (error) {
     res.status(400);
-    res.json(errorRes(400, error.message,null));
+    res.json(errorRes(400, error.message, null));
   }
 };
 
 const showDoctorProfile = async (req, res) => {
   try {
-    const { working_schedule,...doctor} = await store.showDoctorProfile(req.params.id);
-    doctor.working_schedule=Object.values(working_schedule)
-    res.status(200).json(successRes(200,doctor,"Profile fetched successfully"));
+    const { working_schedule, ...doctor } = await store.showDoctorProfile(
+      req.params.id
+    );
+    doctor.working_schedule = Object.values(working_schedule);
+    res
+      .status(200)
+      .json(successRes(200, doctor, "Profile fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -70,8 +81,12 @@ const remove = async (req, res) => {
 
 const showParentsBelongsToDoctor = async (req, res) => {
   try {
-    const parents = await store.showParentsBelongsToDoctor(req.params.doctor_id);
-    res.status(200).json(successRes(200, parents,"Parent's fetched successfully"));
+    const parents = await store.showParentsBelongsToDoctor(
+      req.params.doctor_id
+    );
+    res
+      .status(200)
+      .json(successRes(200, parents, "Parent's fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -109,6 +124,18 @@ const removeParentBelongsToDoctor = async (req, res) => {
   }
 };
 
+const getDoctorRatings = async (req, res) => {
+  try {
+    const parents = await store.getDoctorRatings(req.params.doctor_id);
+    res
+      .status(200)
+      .json(successRes(200, parents, "Rating's fetched successfully"));
+  } catch (error) {
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 module.exports = {
   index,
   update,
@@ -117,4 +144,5 @@ module.exports = {
   showParentsBelongsToDoctor,
   addParentToDoctor,
   removeParentBelongsToDoctor,
+  getDoctorRatings,
 };

@@ -12,6 +12,12 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (user_id,full_name, email, password, role,verified) VALUES (500,'mohab','mu@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','doctor',true) ,
+INSERT INTO users (user_id,full_name, email, password, role,verified) VALUES (500,'mohab','mg@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','doctor',true) ,
+(501,'mohab','fa@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','doctor',true) ,
+(502,'mohab','s21@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','doctor',true) ,
+(503,'mohab','g23u@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','doctor',true) ,
 (700,'mohab','muu@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','parent',true),
+(701,'mohab','mo@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','parent',true),
+(702,'mohab','m@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','parent',true),
+(703,'mohab','a@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','parent',true),
 (800,'mohab','muuu@gmail.com','$2a$10$u21P4ebMPl/IX6S/tPcMi.YVw3sBa0VVSvvWGIrPgk4Yj2N0J9n/e','parent',true);

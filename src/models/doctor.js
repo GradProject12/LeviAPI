@@ -30,8 +30,7 @@ class DoctorStore {
 
   async showDoctorProfile(id) {
     try {
-      const sql =
-        `SELECT * FROM (SELECT full_name, email, phone, profile_image, created_at, doctor_id, certificate_image, clinic_location, clinic_phone_number, working_schedule
+      const sql = `SELECT * FROM (SELECT full_name, email, phone, profile_image, created_at, doctor_id, certificate_image, clinic_location, clinic_phone_number, working_schedule
            FROM users JOIN doctors on users.user_id=doctors.doctor_id) AS users WHERE doctor_id=($1)`;
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
@@ -43,7 +42,7 @@ class DoctorStore {
       throw new Error(error.message);
     }
   }
-  
+
   async create(doctor) {
     try {
       const addToUsers =
@@ -110,9 +109,10 @@ class DoctorStore {
         return { doctor_id: user_id, ...rest, ...result2.rows[0] };
       else throw new Error("doctor is not found");
     } catch (error) {
-      if (error.code === "22P02" && error.routine==='json_ereport_error') throw new Error(`Working Schedule mus be of type json`);
+      if (error.code === "22P02" && error.routine === "json_ereport_error")
+        throw new Error(`Working Schedule mus be of type json`);
       if (error.code === "22P02") throw new Error(`id must be integer`);
-      console.log(error)
+      console.log(error);
 
       if (error.code === "23505")
         throw new Error(
@@ -207,6 +207,28 @@ class DoctorStore {
       conn.release();
       if (result.rows[0].doctor_id) return true;
       return false;
+    } catch (error) {
+      if (error.code === "22P02") throw new Error(`id must be integer`);
+      throw new Error(error.message);
+    }
+  }
+
+  async getDoctorRatings(doctor_id) {
+    try {
+      const sql = `
+      SELECT
+      (SELECT COUNT(*) 
+       FROM doctors_ratings WHERE doctor_id=($1)
+      ) as count, 
+      (SELECT json_agg(t.*) FROM (
+          SELECT R.rating_id,R.rating,R.review,U.profile_image,U.full_name,R.parent_id,R.created_at FROM doctors_ratings R INNER JOIN users U ON R.parent_id=U.user_id WHERE R.doctor_id=($1)
+      ORDER BY R.created_at DESC 
+      ) AS t) AS rows; `;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [doctor_id]);
+      conn.release();
+      if (result.rows[0].rows) return result.rows[0];
+      else throw new Error("No ratings found");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
       throw new Error(error.message);
