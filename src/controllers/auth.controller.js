@@ -177,8 +177,8 @@ exports.login = async (req, res) => {
       const isAccepted = await doctorStore.isAccepted(user.email);
       if (!(await isAccepted.accepted_status)) {
         return res
-          .status(200)
-          .json(successRes(200, null, "You are still in the waiting list"));
+          .status(401)
+          .json(successRes(401, null, "You are still in the waiting list"));
       }
     }
     const token = jwt.sign({ loggeduser }, process.env.TOKEN_SERCRET, {

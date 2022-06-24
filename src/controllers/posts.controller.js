@@ -6,20 +6,27 @@ const { deleteFile } = require("../services/helpers");
 const index = async (req, res) => {
   try {
     if (!res.data)
-      return res.status(400).json(errorRes(400, "Nothing exits",null));
+      return res.status(400).json(errorRes(400, "Nothing exits", null));
     res
       .status(200)
-      .json(successRes(200, res.data, "Posts fetched successfully", res.paginatedResult));
+      .json(
+        successRes(
+          200,
+          res.data,
+          "Posts fetched successfully",
+          res.paginatedResult
+        )
+      );
   } catch (error) {
     res.status(400);
-    res.json(errorRes(400, error.message,null));
+    res.json(errorRes(400, error.message, null));
   }
 };
 
 const show = async (req, res) => {
   try {
     const post = await store.show(req.params.post_id);
-    res.status(200).json(successRes(200, post,"Post fetched successfully"));
+    res.status(200).json(successRes(200, post, "Post fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -30,7 +37,7 @@ const create = async (req, res) => {
   const post = {
     user_id: req.params.user_id,
     body: req.body.body,
-    private:req.body.private==='true' || req.body.private==='True'
+    private: req.body.private === "true" || req.body.private === "True",
   };
   try {
     if (!post.body) {
@@ -41,7 +48,7 @@ const create = async (req, res) => {
     if (req.files.length) {
       let path = [];
       req.files.map((file) => {
-        path.push(`http://${req.headers.host}/${file.path}`);
+        path.push(`https://${req.headers.host}/${file.path}`);
       });
       post.file = path;
     }
@@ -56,7 +63,7 @@ const create = async (req, res) => {
       post.type = "text_with_album";
 
     await store.create(post);
-    res.status(200).json(successRes(200, null,"Post created successfully."));
+    res.status(200).json(successRes(200, null, "Post created successfully."));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -107,7 +114,7 @@ const remove = async (req, res) => {
 const showPostsBelongToUser = async (req, res) => {
   try {
     const posts = await store.showPostsBelongToUser(req.params.user_id);
-    res.status(200).json(successRes(200,posts,"Posts fetched successfully"));
+    res.status(200).json(successRes(200, posts, "Posts fetched successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
@@ -120,5 +127,5 @@ module.exports = {
   create,
   update,
   remove,
-  showPostsBelongToUser
+  showPostsBelongToUser,
 };

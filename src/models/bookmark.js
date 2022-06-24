@@ -11,7 +11,7 @@ class BookmarkStore {
           "SELECT mes.profile_image,mes.full_name,ass.user_id,count(ass.user_id) FROM (SELECT * FROM messages AS mes JOIN assets AS ass ON mes.message_id=ass.asset_id JOIN users AS us ON us.user_id=ass.user_id ) AS mes JOIN assets AS ass ON mes.message_id=ass.asset_id JOIN bookmarks AS bk ON mes.message_id=bk.asset_id WHERE bk.user_id=($1) GROUP BY mes.profile_image,mes.full_name,ass.user_id";
       else if (type === "post")
         sql =
-          "SELECT us.profile_image,pos.body,pos.created_at,us.full_name,us.user_id FROM posts AS pos JOIN bookmarks AS bk ON pos.post_id=bk.asset_id JOIN assets AS ass ON bk.asset_id=ass.asset_id JOIN users AS us ON us.user_id=ass.user_id WHERE bk.user_id=($1)";
+          "SELECT us.profile_image,pos.file,pos.body,pos.created_at,us.full_name,us.user_id FROM posts AS pos JOIN bookmarks AS bk ON pos.post_id=bk.asset_id JOIN assets AS ass ON bk.asset_id=ass.asset_id JOIN users AS us ON us.user_id=ass.user_id WHERE bk.user_id=($1)";
       const result = await conn.query(sql, [user_id]);
       conn.release();
       return result.rows;
