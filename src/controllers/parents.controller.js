@@ -72,7 +72,8 @@ const remove = async (req, res) => {
 
 const showParentAnalayses = async (req, res) => {
   try {
-    const analyses = await store.showParentAnalayses(req.userId);
+    console.log(req.params.parent_id);
+    const analyses = await store.showParentAnalayses(req.params.parent_id);
     res
       .status(200)
       .json(successRes(200, analyses, "Analyses fetched successfully"));
