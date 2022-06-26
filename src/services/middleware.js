@@ -3,6 +3,7 @@ exports.pagination = (model) => async (req, res, next) => {
     per_page: 12,
     page: +req.query.page || 1,
     filter: "created_at",
+    userId: req.userId
   };
   const { per_page, page } = params;
 
@@ -20,5 +21,6 @@ exports.pagination = (model) => async (req, res, next) => {
   };
   res.paginatedResult = meta;
   res.data = rows;
+  res.userId=req.userId
   next();
 };
