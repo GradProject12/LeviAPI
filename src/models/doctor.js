@@ -95,7 +95,7 @@ class DoctorStore {
         `UPDATE doctors SET clinic_location=COALESCE($1,clinic_location),
           working_schedule=COALESCE($2,working_schedule),clinic_phone_number=COALESCE($3,clinic_phone_number),
           certificate_image=COALESCE($4,certificate_image)
-           WHERE doctor_id=($3) RETURNING * `;
+           WHERE doctor_id=($5) RETURNING * `;
       const conn = await client.connect();
       const result1 = await conn.query(updateUser, [
         doctor.full_name,

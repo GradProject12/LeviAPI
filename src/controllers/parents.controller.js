@@ -37,17 +37,25 @@ const showParent = async (req, res) => {
 
 const update = async (req, res) => {
   const parent = {
-    email: req.body.email,
+    full_name: req.body.full_name,
     phone: req.body.phone,
-    profile_image: req.body.profile_image,
   };
   try {
-    if (parent.email && !validator.isEmail(parent.email))
-      throw new Error("email address is not valid ");
     if (parent.password && parent.password.length < 8)
       throw new Error("password must be at least 8 characters ");
     if (parent.profile_image && !validator.isURL(parent.profile_image, []))
       throw new Error("image path is not valid");
+
+      if (req.files) {
+        if (req.files.profile_image) {
+          let path = [];
+          req.files.profile_image.map((file) => {
+            path.push(`https://${req.headers.host}/${file.path}`);
+          });
+          parent.profile_image = path;
+        }
+       
+      }
     await store.update(parent, req.userId);
     res
       .status(200)
