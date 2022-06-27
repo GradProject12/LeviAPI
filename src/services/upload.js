@@ -40,10 +40,9 @@ exports.fileUploadd = (name) => (req, res, next) => {
   }).array(name, 10);
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
-      res.status(400).json(errorRes(400, err));
+      return res.status(400).json(errorRes(400, err));
     } else if (err) {
-      // console.log(err);
-      // res.status(400).json(errorRes(400, err.message));
+      return res.status(400).json(errorRes(400, err.message));
     }
     next();
   });
@@ -63,10 +62,11 @@ exports.multipleUpload = (arr) => (req, res, next) => {
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       if (err.message === "Unexpected field")
-        return res.status(400).json(errorRes(400, "You uploaded to a wrong field"));
+        return res
+          .status(400)
+          .json(errorRes(400, "You uploaded to a wrong field"));
     } else if (err) {
-      // console.log(err);
-      // res.status(400).json(errorRes(400, err.message));
+      return res.status(400).json(errorRes(400, err.message));
     }
     next();
   });
