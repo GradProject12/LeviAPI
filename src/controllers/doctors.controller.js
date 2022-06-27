@@ -41,11 +41,11 @@ const showDoctorProfile = async (req, res) => {
 
 const update = async (req, res) => {
   const doctor = {
-    email: req.body.email,
+    full_name: req.body.full_name,
     phone: req.body.phone,
-    profile_image: req.body.profile_image,
     clinic_location: req.body.clinic_location,
     working_schedule: req.body.working_schedule,
+    clinic_phone_number: req.body.clinic_phone_number,
   };
   try {
     if (doctor.email && !validator.isEmail(doctor.email))
@@ -57,6 +57,23 @@ const update = async (req, res) => {
       !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
     )
       throw new Error("phone number is not valid");
+      
+    if (req.files) {
+      if (req.files.profile_image) {
+        let path = [];
+        req.files.profile_image.map((file) => {
+          path.push(`https://${req.headers.host}/${file.path}`);
+        });
+        doctor.profile_image = path;
+      }
+      if (req.files.certificate_image) {
+        let path = [];
+        req.files.certificate_image.map((file) => {
+          path.push(`https://${req.headers.host}/${file.path}`);
+        });
+        doctor.certificate_image = path;
+      }
+    }
     const doctorn = await store.update(doctor, req.userId);
     res
       .status(200)

@@ -79,7 +79,7 @@ const update = async (req, res) => {
   if (req.files.length) {
     let path = [];
     req.files.map((file) => {
-      path.push(`http://${req.headers.host}/${file.path}`);
+      path.push(`https://${req.headers.host}/${file.path}`);
     });
     post.file = path;
   }

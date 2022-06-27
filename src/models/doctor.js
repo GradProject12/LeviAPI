@@ -88,12 +88,17 @@ class DoctorStore {
   async update(doctor, id) {
     try {
       const updateUser =
-        "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), profile_image=COALESCE($3,profile_image) WHERE user_id=($4) RETURNING *";
+        `UPDATE  users SET full_name=COALESCE($1,full_name), phone=COALESCE($2,phone),
+         profile_image=COALESCE($3,profile_image)
+          WHERE user_id=($4) RETURNING *`;
       const updateDoctor =
-        "UPDATE doctors SET clinic_location=COALESCE($1,clinic_location),  working_schedule=COALESCE($2,working_schedule) where doctor_id=($3) RETURNING * ";
+        `UPDATE doctors SET clinic_location=COALESCE($1,clinic_location),
+          working_schedule=COALESCE($2,working_schedule),clinic_phone_number=COALESCE($3,clinic_phone_number),
+          certificate_image=COALESCE($4,certificate_image)
+           WHERE doctor_id=($3) RETURNING * `;
       const conn = await client.connect();
       const result1 = await conn.query(updateUser, [
-        doctor.email,
+        doctor.full_name,
         doctor.phone,
         doctor.profile_image,
         id,
@@ -101,6 +106,8 @@ class DoctorStore {
       const result2 = await conn.query(updateDoctor, [
         doctor.clinic_location,
         doctor.working_schedule,
+        doctor.clinic_phone_number,
+        doctor.certificate_image,
         id,
       ]);
       conn.release();

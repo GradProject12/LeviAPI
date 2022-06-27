@@ -48,3 +48,25 @@ exports.fileUploadd = (name) => (req, res, next) => {
     next();
   });
 };
+
+exports.multipleUpload = (arr) => (req, res, next) => {
+  const field = arr.map((att) => {
+    return { name: att, maxCount: 1 };
+  });
+  const upload = multer({
+    storage: storage,
+    limits: {
+      fileSize: 1024 * 1024 * 5,
+    },
+    fileFilter: fileFilter,
+  }).fields(field);
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      throw new Error("asdas");
+    } else if (err) {
+      // console.log(err);
+      // res.status(400).json(errorRes(400, err.message));
+    }
+    next();
+  });
+};

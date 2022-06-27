@@ -5,6 +5,7 @@ const doctorController = require("../controllers/doctors.controller");
 const verifyAuthToken = require("../services/auth");
 const doctorStore = require("../models/doctor");
 const { pagination } = require("../services/middleware");
+const { fileUploadd, multipleUpload } = require("../services/upload");
 
 const store = new doctorStore();
 
@@ -20,7 +21,7 @@ router.get(
   verifyAuthToken,
   doctorController.showParentsBelongsToDoctor
 );
-router.put("/:id", verifyAuthToken, doctorController.update);
+router.put("/:id", verifyAuthToken,multipleUpload(["profile_image","certificate_image"]), doctorController.update);
 router.delete("/:id", verifyAuthToken, doctorController.remove);
 router.post(
   "/:doctor_id/add-parent",
