@@ -52,9 +52,8 @@ const update = async (req, res) => {
           req.files.profile_image.map((file) => {
             path.push(`https://${req.headers.host}/${file.path}`);
           });
-          parent.profile_image = path;
+          parent.profile_image = path[0];
         }
-       
       }
     await store.update(parent, req.userId);
     res

@@ -64,14 +64,14 @@ const update = async (req, res) => {
         req.files.profile_image.map((file) => {
           path.push(`https://${req.headers.host}/${file.path}`);
         });
-        doctor.profile_image = path;
+        doctor.profile_image = path[0];
       }
       if (req.files.certificate_image) {
         let path = [];
         req.files.certificate_image.map((file) => {
           path.push(`https://${req.headers.host}/${file.path}`);
         });
-        doctor.certificate_image = path;
+        doctor.certificate_image = path[0];
       }
     }
     await store.update(doctor, req.userId);
