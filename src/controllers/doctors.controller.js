@@ -74,10 +74,10 @@ const update = async (req, res) => {
         doctor.certificate_image = path;
       }
     }
-    const doctorn = await store.update(doctor, req.userId);
+    await store.update(doctor, req.userId);
     res
       .status(200)
-      .json(successRes(200, doctorn, "Account is updated successfully"));
+      .json(successRes(200, null, "Account is updated successfully"));
   } catch (error) {
     res.status(400);
     res.json(errorRes(400, error.message));
