@@ -8,12 +8,18 @@ const index = async (_req, res) => {
   try {
     if (!res.data)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
+    const newData = res.data.map((res) => {
+      const { working_schedule, ...doctor } = res;
+      if (working_schedule)
+        doctor.working_schedule = Object.values(working_schedule);
+      return doctor;
+    });
     res
       .status(200)
       .json(
         successRes(
           200,
-          res.data,
+          newData,
           "Doctor's fetched successfully",
           res.paginatedResult
         )
@@ -57,7 +63,7 @@ const update = async (req, res) => {
       !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(doctor.phone)
     )
       throw new Error("phone number is not valid");
-      
+
     if (req.files) {
       if (req.files.profile_image) {
         let path = [];

@@ -46,15 +46,15 @@ const update = async (req, res) => {
     if (parent.profile_image && !validator.isURL(parent.profile_image, []))
       throw new Error("image path is not valid");
 
-      if (req.files) {
-        if (req.files.profile_image) {
-          let path = [];
-          req.files.profile_image.map((file) => {
-            path.push(`https://${req.headers.host}/${file.path}`);
-          });
-          parent.profile_image = path[0];
-        }
+    if (req.files) {
+      if (req.files.profile_image) {
+        let path = [];
+        req.files.profile_image.map((file) => {
+          path.push(`https://${req.headers.host}/${file.path}`);
+        });
+        parent.profile_image = path[0];
       }
+    }
     await store.update(parent, req.userId);
     res
       .status(200)
@@ -135,7 +135,10 @@ const rateDoctor = async (req, res) => {
 const showParentInfo = async (req, res) => {
   try {
     const parent = await store.showParentInfo(req.userId);
-    const doctor = parent.doctor || undefined;
+    const doctor = parent.doctor[0] || undefined;
+    if (doctor) {
+      doctor.working_schedule = Object.values(doctor.working_schedule);
+    }
     res
       .status(200)
       .json(
