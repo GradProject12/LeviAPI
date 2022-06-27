@@ -130,7 +130,7 @@ const getDoctorRatings = async (req, res) => {
 
 const getPrivatePosts = async (req, res) => {
   try {
-    const parents = await store.getPrivatePosts(req.userId);
+    const parents = await store.getPrivatePosts(req.params.doctor_id);
     res
       .status(200)
       .json(successRes(200, parents, "Posts's fetched successfully"));

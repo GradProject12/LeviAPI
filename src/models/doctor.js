@@ -238,7 +238,9 @@ class DoctorStore {
   async getPrivatePosts(doctor_id) {
     try {
       const sql = `
-      SELECT * FROM posts P JOIN assets A ON P.post_id=A.asset_id WHERE private=True AND A.user_id=($1); 
+      SELECT post_id,body,file,
+      (SELECT EXISTS(SELECT * FROM bookmarks WHERE user_id=($1) AND asset_id=P.post_id)) AS isBookmarked
+      FROM posts P JOIN assets A ON P.post_id=A.asset_id JOIN users U ON U.user_id=A.user_id WHERE private=True AND A.user_id=($1); 
       `;
       const conn = await client.connect();
       const result = await conn.query(sql, [doctor_id]);
