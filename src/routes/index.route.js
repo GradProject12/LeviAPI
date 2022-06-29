@@ -11,6 +11,10 @@ const posts = require("./posts.route");
 const auth = require("./auth.route");
 const analyses = require("./analyses.route");
 
+const path = require("path");
+const fs = require("fs");
+const pr = require("util")
+
 const router = express.Router();
 
 router.use("/api/animals", animals);
@@ -24,5 +28,17 @@ router.use("/api/bookmarks", bookmarks);
 router.use("/api/posts", posts);
 router.use("/api/analyses", analyses);
 router.use("/api/", auth);
+
+
+const test = async (req,res) => {
+    const arr=[]
+    const readdirAsync = pr.promisify(fs.readdir);
+	const models = await readdirAsync('./uploads');
+	for (let file of models) {
+        arr.push(file)
+	}
+	return res.json(arr)
+};
+router.get("/api/test",test)
 
 module.exports = router;
