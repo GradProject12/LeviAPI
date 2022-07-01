@@ -5,7 +5,7 @@ const { successRes, errorRes } = require("../services/response");
 const index = async (_req, res) => {
   try {
     const colors = await store.index();
-    if (colors.length) res.status(200).json(successRes(200, colors));
+    if (colors.length) return res.status(200).json(successRes(200, colors));
     res.status(200).json(successRes(200, null, "No data exist!"));
   } catch (error) {
     if (error.code)

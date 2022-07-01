@@ -5,7 +5,7 @@ const { successRes, errorRes } = require("../services/response");
 const index = async (_req, res) => {
   try {
     const animals = await store.index();
-    if (animals.length) res.status(200).json(successRes(200, animals));
+    if (animals.length) return res.status(200).json(successRes(200, animals));
     res.status(200).json(successRes(200, null, "No data exist!"));
   } catch (error) {
     if (error.code)
@@ -41,7 +41,7 @@ const create = async (req, res) => {
       throw error;
     }
     await store.create(animal);
-    res.status(200).json(successRes(200, null,'Animal created successfully!'));
+    res.status(200).json(successRes(200, null, "Animal created successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -63,7 +63,7 @@ const update = async (req, res) => {
       throw error;
     }
     await store.update(animal, req.params.id);
-    res.status(200).json(successRes(200, null,'Animal updated successfully!'));
+    res.status(200).json(successRes(200, null, "Animal updated successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -75,7 +75,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     await store.delete(req.params.id);
-    res.status(200).json(successRes(200, null,'Animal deleted successfully!'));
+    res.status(200).json(successRes(200, null, "Animal deleted successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));

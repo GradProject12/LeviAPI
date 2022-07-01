@@ -6,7 +6,7 @@ const store = new ExpressionStore();
 const index = async (_req, res) => {
   try {
     const expressions = await store.index();
-    if (expressions.length) res.status(200).json(successRes(200, expressions));
+    if (expressions.length) return res.status(200).json(successRes(200, expressions));
     res.status(200).json(successRes(200, null, "No data exist!"));
   } catch (error) {
     if (error.code)
