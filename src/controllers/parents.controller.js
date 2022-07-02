@@ -135,7 +135,7 @@ const rateDoctor = async (req, res) => {
 const showParentInfo = async (req, res) => {
   try {
     const parent = await store.showParentInfo(req.userId);
-    const doctor = parent.doctor[0] || undefined;
+    const doctor = parent.doctor?parent.doctor[0] : undefined;
     if (doctor) {
       doctor.working_schedule = Object.values(doctor.working_schedule);
     }

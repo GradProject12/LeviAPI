@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { errorRes } = require("./response");
 
 const verifyAuthToken = (req, res, next) => {
   try {
@@ -8,8 +9,7 @@ const verifyAuthToken = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    res.status(401);
-    res.json("Access denied, invalid token");
+    res.status(401).json(errorRes(401, "Access denied, invalid token"));
     return;
   }
 };
