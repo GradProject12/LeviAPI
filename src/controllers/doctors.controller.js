@@ -68,14 +68,14 @@ const update = async (req, res) => {
       if (req.files.profile_image) {
         let path = [];
         req.files.profile_image.map((file) => {
-          path.push(`https://${req.headers.host}/${file.path}`);
+          path.push(`${file.path}`);
         });
         doctor.profile_image = path[0];
       }
       if (req.files.certificate_image) {
         let path = [];
         req.files.certificate_image.map((file) => {
-          path.push(`https://${req.headers.host}/${file.path}`);
+          path.push(`${file.path}`);
         });
         doctor.certificate_image = path[0];
       }

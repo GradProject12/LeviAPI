@@ -50,7 +50,7 @@ const update = async (req, res) => {
       if (req.files.profile_image) {
         let path = [];
         req.files.profile_image.map((file) => {
-          path.push(`https://${req.headers.host}/${file.path}`);
+          path.push(`${file.path}`);
         });
         parent.profile_image = path[0];
       }

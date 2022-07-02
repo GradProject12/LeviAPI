@@ -48,7 +48,7 @@ const create = async (req, res) => {
     if (req.files.length) {
       let path = [];
       req.files.map((file) => {
-        path.push(`https://${req.headers.host}/${file.path}`);
+        path.push(`${file.path}`);
       });
       post.file = path;
     }
@@ -79,7 +79,7 @@ const update = async (req, res) => {
   if (req.files.length) {
     let path = [];
     req.files.map((file) => {
-      path.push(`https://${req.headers.host}/${file.path}`);
+      path.push(`${file.path}`);
     });
     post.file = path;
   }

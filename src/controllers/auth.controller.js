@@ -73,7 +73,7 @@ exports.signup = async (req, res) => {
       if (req.files.length) {
         let path = [];
         req.files.map((file) => {
-          path.push(`http://${req.headers.host}/${file.path}`);
+          path.push(`${file.path}`);
         });
         user.certificate_image = path;
       }
