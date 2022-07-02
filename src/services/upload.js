@@ -1,5 +1,8 @@
 const multer = require("multer");
 const { errorRes } = require("./response");
+const { cloudStorage } = require('../../storage/storage');
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./uploads/");
@@ -32,7 +35,7 @@ const fileFilter = (req, file, cb) => {
 
 exports.fileUploadd = (name) => (req, res, next) => {
   const upload = multer({
-    storage: storage,
+    storage: cloudStorage,
     limits: {
       fileSize: 1024 * 1024 * 5,
     },
@@ -53,7 +56,7 @@ exports.multipleUpload = (arr) => (req, res, next) => {
     return { name: att, maxCount: 1 };
   });
   const upload = multer({
-    storage: storage,
+    storage: cloudStorage,
     limits: {
       fileSize: 1024 * 1024 * 5,
     },
