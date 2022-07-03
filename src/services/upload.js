@@ -74,3 +74,21 @@ exports.multipleUpload = (arr) => (req, res, next) => {
     next();
   });
 };
+
+exports.uploadFinal = (name) => (req, res, next) => {
+  const upload = multer({
+    storage: cloudStorage,
+    limits: {
+      fileSize: 1024 * 1024 * 5,
+    },
+    fileFilter: fileFilter,
+  }).single(name);
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json(errorRes(400, err));
+    } else if (err) {
+      return res.status(400).json(errorRes(400, err.message));
+    }
+    next();
+  });
+};
