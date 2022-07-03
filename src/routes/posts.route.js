@@ -6,6 +6,10 @@ const postController = require("../controllers/posts.controller");
 const verifyAuthToken = require("../services/auth");
 const postStore = require("../models/post");
 const {pagination} = require("../services/middleware");
+const { cloudStorage } = require('../../storage/storage');
+const multer  = require('multer')
+
+const upload = multer({ storage: cloudStorage })
 
 const store = new postStore();
 
@@ -14,6 +18,6 @@ router.get("/:post_id", verifyAuthToken, postController.show);
 router.get("/user/:user_id", verifyAuthToken, postController.showPostsBelongToUser);
 router.put("/:post_id", verifyAuthToken, fileUploadd("file"), postController.update);
 router.delete("/:post_id", verifyAuthToken, postController.remove);
-router.post("/:user_id", verifyAuthToken, fileUploadd("file"), postController.create);
+router.post("/:user_id", verifyAuthToken, upload.single("file"), postController.create);
 
 module.exports = router;

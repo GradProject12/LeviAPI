@@ -70,7 +70,7 @@ exports.signup = async (req, res) => {
       }
       if (user.national_id && user.national_id.length != 14)
         throw new Error("national id must be 14 number ");
-      if (req.files.length) {
+      if (req.files && req.files.length) {
         let path = [];
         req.files.map((file) => {
           path.push(`${file.path}`);
