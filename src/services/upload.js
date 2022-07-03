@@ -13,24 +13,25 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype == "image/png" ||
-    file.mimetype == "image/jpg" ||
-    file.mimetype == "image/jpeg" ||
-    file.mimetype == "application/pdf" ||
-    file.mimetype == "application/vnd.ms-excel" ||
-    file.mimetype == "application/msword" ||
-    file.mimetype == "text/plain"
-  ) {
+  console.log(file.mimetype)
+  // if (
+  //   file.mimetype == "image/png" ||
+  //   file.mimetype == "image/jpg" ||
+  //   file.mimetype == "image/jpeg" ||
+  //   file.mimetype == "application/pdf" ||
+  //   file.mimetype == "application/vnd.ms-excel" ||
+  //   file.mimetype == "application/msword" ||
+  //   file.mimetype == "text/plain"
+  // ) {
     cb(null, true);
-  } else {
-    cb(null, false);
-    const err = new Error(
-      "Only .png, .jpg, .jpeg, .pdf, .doc and .txt format allowed!"
-    );
-    err.name = "ExtensionError";
-    return cb(err);
-  }
+  // } else {
+  //   cb(null, false);
+  //   const err = new Error(
+  //     "Only .png, .jpg, .jpeg, .pdf, .doc and .txt format allowed!"
+  //   );
+  //   err.name = "ExtensionError";
+  //   return cb(err);
+  // }
 };
 
 exports.fileUploadd = (name) => (req, res, next) => {
@@ -81,6 +82,7 @@ exports.uploadFinal = (name) => (req, res, next) => {
     limits: {
       fileSize: 1024 * 1024 * 5,
     },
+    fileFilter: fileFilter,
   }).single(name);
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
