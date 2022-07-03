@@ -81,7 +81,6 @@ exports.uploadFinal = (name) => (req, res, next) => {
     limits: {
       fileSize: 1024 * 1024 * 5,
     },
-    fileFilter: fileFilter,
   }).single(name);
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
