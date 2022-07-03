@@ -40,31 +40,31 @@ const create = async (req, res) => {
     private: req.body.private === "true" || req.body.private === "True",
   };
   try {
-    if(req.file){
-      let path = [];
-      path.push(req.file.path)
-      post.file = path;
-    }
+    // if(req.file){
+    //   let path = [];
+    //   path.push(req.file.path)
+    //   post.file = path;
+    // }
     if (!post.body) {
       const error = new Error("Post's body is missing");
       error.code = 422;
       throw error;
     }
-    // if (req.files.length) {
-    //   let path = [];
-    //   req.files.map((file) => {
-    //     path.push(`${file.path}`);
-    //   });
-    //   post.file = path;
-    // }
-    // const imagetypes = /jpeg|jpg|png/;
-    // const filetypes = /pdf|doc|txt/;
-    // const file = req.files.length && req.files[0].mimetype;
-    // if (!file) post.type = "text_only";
-    // else if (req.files.length === 1) {
-    //   if (imagetypes.test(file)) post.type = "text_with_image";
-    //   else if (filetypes.test(file)) post.type = "text_with_file";
-    // } else if (req.files.length > 1 && imagetypes.test(file))
+    if (req.files.length) {
+      let path = [];
+      req.files.map((file) => {
+        path.push(`${file.path}`);
+      });
+      post.file = path;
+    }
+    const imagetypes = /jpeg|jpg|png/;
+    const filetypes = /pdf|doc|txt/;
+    const file = req.files.length && req.files[0].mimetype;
+    if (!file) post.type = "text_only";
+    else if (req.files.length === 1) {
+      if (imagetypes.test(file)) post.type = "text_with_image";
+      else if (filetypes.test(file)) post.type = "text_with_file";
+    } else if (req.files.length > 1 && imagetypes.test(file))
       post.type = "text_with_album";
 
     await store.create(post);
