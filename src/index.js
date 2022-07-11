@@ -7,6 +7,7 @@ const routes = require("./routes/index.route");
 const app = express();
 const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
+const { errorRes } = require("./services/response");
 const swaggerJSDocs = YAML.load("src/swagger.yaml");
 const PORT = process.env.PORT || 3000;
 
@@ -18,11 +19,22 @@ app.use(
     extended: true,
   })
 );
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 app.use(morgan("combined"));
 app.use(helmet());
 app.use(cors());
 app.use(routes);
+app.use((err, req, res, next) => {
+  console.log(err);
+  return res
+    .status(500)
+    .json(
+      errorRes(
+        500,
+        "An error occured on the server, Please refer back to the backend development team."
+      )
+    );
+});
 app.listen(PORT, function () {
   console.log(`starting app on: http://localhost:${PORT}`);
 });

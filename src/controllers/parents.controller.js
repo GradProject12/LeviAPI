@@ -127,6 +127,9 @@ const rateDoctor = async (req, res) => {
       .status(200)
       .json(successRes(200, null, "Doctor is rated Successfully."));
   } catch (error) {
+    if (error.code) {
+      return res.status(401).json(errorRes(401, error.message));
+    }
     res.status(400);
     res.json(errorRes(400, error.message));
   }
@@ -135,7 +138,7 @@ const rateDoctor = async (req, res) => {
 const showParentInfo = async (req, res) => {
   try {
     const parent = await store.showParentInfo(req.userId);
-    const doctor = parent.doctor?parent.doctor[0] : undefined;
+    const doctor = parent.doctor ? parent.doctor[0] : undefined;
     if (doctor) {
       doctor.working_schedule = Object.values(doctor.working_schedule);
     }

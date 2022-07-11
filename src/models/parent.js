@@ -175,6 +175,11 @@ class ParentStore {
       else throw new Error("doctor is not found");
     } catch (error) {
       if (error.code === "22P02") throw new Error(`id must be integer`);
+      if (error.code === "23503") {
+        const err = new Error("Unauthorized");
+        err.code = 401;
+        throw err;
+      }
       if (error.code === "23505") throw new Error(`Doctor is already rated`);
       throw new Error(error.message);
     }
