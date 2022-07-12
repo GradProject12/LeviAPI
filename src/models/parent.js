@@ -81,10 +81,10 @@ class ParentStore {
   async update(parent, id) {
     try {
       const updateUser =
-        "UPDATE  users SET email=COALESCE($1,email), phone=COALESCE($2,phone), profile_image=COALESCE($3,profile_image) WHERE user_id=($4) RETURNING *";
+        "UPDATE  users SET full_name=COALESCE($1,full_name), phone=COALESCE($2,phone), profile_image=COALESCE($3,profile_image) WHERE user_id=($4) RETURNING *";
       const conn = await client.connect();
       const result = await conn.query(updateUser, [
-        parent.email,
+        parent.full_name,
         parent.phone,
         parent.profile_image,
         id,
