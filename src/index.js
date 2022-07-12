@@ -41,7 +41,11 @@ const server = app.listen(PORT, function () {
   console.log(`starting app on: http://localhost:${PORT}`);
 });
 
-const io = require("./socket").init(server);
+const io = require("./socket").init(server, {
+  cors: {
+    origin: "*",
+  },
+});
 io.on("connection", (socket) => {
   console.log("Client connected");
 });
