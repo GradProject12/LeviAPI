@@ -1,10 +1,11 @@
 const MessagesStore = require("../models/message");
 const store = new MessagesStore();
 const { successRes, errorRes } = require("../services/response");
-
+const io = require("../socket");
 const index = async (_req, res) => {
   try {
     const messages = await store.index();
+    io.getIO("messages", { action: "getAll", messages: messages });
     if (messages.length) return res.status(200).json(successRes(200, messages));
     res.status(200).json(successRes(200, null, "No data exist!"));
   } catch (error) {
