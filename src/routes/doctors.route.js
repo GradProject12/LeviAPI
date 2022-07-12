@@ -21,7 +21,12 @@ router.get(
   verifyAuthToken,
   doctorController.showParentsBelongsToDoctor
 );
-router.put("/:id", verifyAuthToken,multipleUpload(["profile_image","certificate_image"]), doctorController.update);
+router.put(
+  "/:id",
+  verifyAuthToken,
+  multipleUpload(["profile_image", "certificate_image"]),
+  doctorController.update
+);
 router.delete("/:id", verifyAuthToken, doctorController.remove);
 router.post(
   "/:doctor_id/add-parent",

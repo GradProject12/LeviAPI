@@ -152,14 +152,35 @@ const getDoctorRatings = async (req, res) => {
 };
 
 const getPrivatePosts = async (req, res) => {
+  const params = {
+    per_page: 12,
+    page: +req.query.page || 1,
+    filter: "created_at",
+    userId: req.userId,
+  };
+  const { per_page, page } = params;
   try {
-    const parents = await store.getPrivatePosts(req.params.doctor_id);
+    const posts = await store.getPrivatePosts(params);
+    const { count, rows } = posts[0];
+    const total_count = (count && count) || 0;
+    const page_count = Math.ceil(total_count / per_page) || 0;
+    const meta = {
+      total_count: total_count,
+      current_page: page,
+      limit: per_page,
+      page_count: page_count,
+      hasPreviousPage: page > 1,
+      hasNextPage: page * per_page < total_count,
+      remaning_page: page_count - page,
+    };
+    res.userId = req.userId;
+    if (!rows)
+      return res.status(400).json(errorRes(400, "Nothing exits", null));
     res
       .status(200)
-      .json(successRes(200, parents, "Posts's fetched successfully"));
+      .json(successRes(200, rows, "Posts fetched successfully", meta));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    res.status(400).json(errorRes(400, error.message));
   }
 };
 

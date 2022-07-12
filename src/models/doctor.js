@@ -87,12 +87,10 @@ class DoctorStore {
 
   async update(doctor, id) {
     try {
-      const updateUser =
-        `UPDATE  users SET full_name=COALESCE($1,full_name), phone=COALESCE($2,phone),
+      const updateUser = `UPDATE  users SET full_name=COALESCE($1,full_name), phone=COALESCE($2,phone),
          profile_image=COALESCE($3,profile_image)
           WHERE user_id=($4) RETURNING *`;
-      const updateDoctor =
-        `UPDATE doctors SET clinic_location=COALESCE($1,clinic_location),
+      const updateDoctor = `UPDATE doctors SET clinic_location=COALESCE($1,clinic_location),
           working_schedule=COALESCE($2,working_schedule),clinic_phone_number=COALESCE($3,clinic_phone_number),
           certificate_image=COALESCE($4,certificate_image)
            WHERE doctor_id=($5) RETURNING * `;
@@ -242,15 +240,27 @@ class DoctorStore {
     }
   }
 
-  async getPrivatePosts(doctor_id) {
+  async getPrivatePosts(params) {
     try {
       const sql = `
-      SELECT post_id,body,file,
+      SELECT
+      (SELECT COUNT(*) 
+       FROM posts P JOIN assets A ON P.post_id=A.asset_id JOIN users U ON
+        U.user_id=A.user_id WHERE private=True AND A.user_id=($1)
+      ) as count, 
+      (SELECT json_agg(t.*) FROM (
+          SELECT post_id,body,file,private,P.created_at,U.user_id,U.full_name,U.email,U.profile_image,
       (SELECT EXISTS(SELECT * FROM bookmarks WHERE user_id=($1) AND asset_id=P.post_id)) AS isBookmarked
-      FROM posts P JOIN assets A ON P.post_id=A.asset_id JOIN users U ON U.user_id=A.user_id WHERE private=True AND A.user_id=($1); 
+      FROM posts P JOIN assets A ON P.post_id=A.asset_id JOIN users U ON U.user_id=A.user_id WHERE private=True AND A.user_id=($1)
+      ORDER BY created_at DESC OFFSET ($2) LIMIT ($3)
+      ) AS t) AS rows;; 
       `;
       const conn = await client.connect();
-      const result = await conn.query(sql, [doctor_id]);
+      const result = await conn.query(sql, [
+        params.userId,
+        (params.page - 1) * params.per_page,
+        params.per_page,
+      ]);
       conn.release();
       if (result.rows.length) return result.rows;
       else throw new Error("No posts found");

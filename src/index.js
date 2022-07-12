@@ -24,21 +24,24 @@ app.use(morgan("combined"));
 app.use(helmet());
 app.use(cors());
 app.use(routes);
-app.use((err, req, res, next) => {
-  console.log(err);
-  return res
-    .status(500)
-    .json(
-      errorRes(
-        500,
-        "An error occured on the server, Please refer back to the backend development team."
-      )
-    );
-});
-app.listen(PORT, function () {
+
+// app.use((err, req, res, next) => {
+//   console.log(err);
+//   return res
+//     .status(500)
+//     .json(
+//       errorRes(
+//         500,
+//         "An error occured on the server, Please refer back to the backend development team."
+//       )
+//     );
+// });
+
+const server = app.listen(PORT, function () {
   console.log(`starting app on: http://localhost:${PORT}`);
 });
 
+const io = require("./socket").init(server);
 app.get("/", (req, res) => {
   res.send("Hello");
 });
