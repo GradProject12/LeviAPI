@@ -42,6 +42,9 @@ const server = app.listen(PORT, function () {
 });
 
 const io = require("./socket").init(server);
+io.on("connection", (socket) => {
+  console.log("Client connected");
+});
 app.get("/", (req, res) => {
   res.send("Hello");
 });
