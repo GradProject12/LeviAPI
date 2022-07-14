@@ -1,7 +1,6 @@
 const multer = require("multer");
 const { errorRes } = require("./response");
-const { cloudStorage } = require('../../storage/storage');
-
+const { cloudStorage } = require("../../storage/storage");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -13,7 +12,6 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  console.log(file)
   // if (
   //   file.mimetype == "image/png" ||
   //   file.mimetype == "image/jpg" ||
@@ -23,7 +21,7 @@ const fileFilter = (req, file, cb) => {
   //   file.mimetype == "application/msword" ||
   //   file.mimetype == "text/plain"
   // ) {
-    cb(null, true);
+  cb(null, true);
   // } else {
   //   cb(null, false);
   //   const err = new Error(
@@ -69,24 +67,6 @@ exports.multipleUpload = (arr) => (req, res, next) => {
         return res
           .status(400)
           .json(errorRes(400, "You uploaded to a wrong field"));
-    } else if (err) {
-      return res.status(400).json(errorRes(400, err.message));
-    }
-    next();
-  });
-};
-
-exports.uploadFinal = (name) => (req, res, next) => {
-  const upload = multer({
-    storage: cloudStorage,
-    limits: {
-      fileSize: 1024 * 1024 * 5,
-    },
-    fileFilter: fileFilter,
-  }).single(name);
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json(errorRes(400, err));
     } else if (err) {
       return res.status(400).json(errorRes(400, err.message));
     }

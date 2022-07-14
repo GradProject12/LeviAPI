@@ -6,7 +6,8 @@ const store = new ExpressionStore();
 const index = async (_req, res) => {
   try {
     const expressions = await store.index();
-    if (expressions.length) return res.status(200).json(successRes(200, expressions));
+    if (expressions.length)
+      return res.status(200).json(successRes(200, expressions));
     res.status(200).json(successRes(200, null, "No data exist!"));
   } catch (error) {
     if (error.code)
@@ -31,10 +32,9 @@ const show = async (req, res) => {
 const create = async (req, res) => {
   const expression = {
     status: req.body.status,
-    sound: req.body.sound,
   };
   try {
-    if (!expression.sound) {
+    if (req.files.length && req.files[0].fieldname !== "sound") {
       const error = new Error("Sound is missing");
       error.code = 422;
       throw error;
@@ -45,8 +45,14 @@ const create = async (req, res) => {
       throw error;
     }
 
-    const newExpression = await store.create(expression);
-    res.status(200).json(successRes(200, newExpression));
+    if (req.files.length) {
+      expression.sound = req.files[0].path;
+    }
+
+    await store.create(expression);
+    res
+      .status(200)
+      .json(successRes(200, null, "Expression added successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -57,13 +63,21 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const expression = {
     status: req.body.status,
-    sound: req.body.sound,
   };
   try {
-    if (!expression.sound && !expression.status)
+    if (
+      !expression.status &&
+      !req.files.length &&
+      req.files[0].fieldname !== "sound"
+    )
       throw new Error("No data is entered!");
+    if (req.files.length) {
+      expression.sound = req.files[0].path;
+    }
     await store.update(expression, req.params.id);
-    res.status(200).json(successRes(200, null,'Expression updated successfully!'));
+    res
+      .status(200)
+      .json(successRes(200, null, "Expression updated successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -75,7 +89,9 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     await store.delete(req.params.id);
-    res.status(200).json(successRes(200, null,'Expression deleted successfully!'));
+    res
+      .status(200)
+      .json(successRes(200, null, "Expression deleted successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));

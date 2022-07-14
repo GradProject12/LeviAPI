@@ -30,7 +30,6 @@ const show = async (req, res) => {
 const create = async (req, res) => {
   const animal = {
     name: req.body.name,
-    picture: req.body.picture,
     sound: req.body.sound,
     spelled: req.body.spelled,
   };
@@ -39,6 +38,10 @@ const create = async (req, res) => {
       const error = new Error("Animal name is missing");
       error.code = 422;
       throw error;
+    }
+
+    if (req.files.length) {
+      animal.picture = req.files[0].path;
     }
     await store.create(animal);
     res.status(200).json(successRes(200, null, "Animal created successfully!"));
@@ -52,15 +55,17 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const animal = {
     name: req.body.name,
-    picture: req.body.picture,
     sound: req.body.sound,
     spelled: req.body.spelled,
   };
   try {
-    if (!animal.name && !animal.picture && !animal.sound && !animal.spelled) {
+    if (!animal.name && !req.files.length && !animal.sound && !animal.spelled) {
       const error = new Error("No data is entered!");
       error.code = 422;
       throw error;
+    }
+    if (req.files.length) {
+      animal.picture = req.files[0].path;
     }
     await store.update(animal, req.params.id);
     res.status(200).json(successRes(200, null, "Animal updated successfully!"));

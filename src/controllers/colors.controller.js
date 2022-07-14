@@ -30,7 +30,6 @@ const show = async (req, res) => {
 const create = async (req, res) => {
   const color = {
     name: req.body.name,
-    image: req.body.image,
   };
   try {
     if (!color.name) {
@@ -38,8 +37,11 @@ const create = async (req, res) => {
       error.code = 422;
       throw error;
     }
-    const newcolor = await store.create(color);
-    res.status(200).json(successRes(200, null,'Color updated successfully!'));
+    if (req.files.length) {
+      color.image = req.files[0].path;
+    }
+    await store.create(color);
+    res.status(200).json(successRes(200, null, "Color added successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -50,16 +52,18 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const color = {
     name: req.body.name,
-    image: req.body.image,
   };
   try {
-    if (!color.name && !color.image) {
+    if (!color.name && !req.files.length) {
       const error = new Error("No data is entered!");
       error.code = 422;
       throw error;
     }
+    if (req.files.length) {
+      color.image = req.files[0].path;
+    }
     await store.update(color, req.params.id);
-    res.status(200).json(successRes(200, null,'Color updated successfully!'));
+    res.status(200).json(successRes(200, null, "Color updated successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -71,7 +75,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     await store.delete(req.params.id);
-    res.status(200).json(successRes(200, null,'Color deleted Successfully!'));
+    res.status(200).json(successRes(200, null, "Color deleted Successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
