@@ -47,7 +47,10 @@ const sendMessage = async (req, res) => {
       await store.addParticipants(params);
     }
     const msg = await store.sendMessage(params);
-    io.getIO().emit(params.chat_id, { action: "newMessage", message: msg });
+    io.getIO().emit(params.chat_id.toString(), {
+      action: "newMessage",
+      message: msg,
+    });
 
     return res
       .status(200)
