@@ -6,7 +6,6 @@ const io = require("../socket");
 const getAllMessage = async (req, res) => {
   try {
     const messages = await store.getAllMessage(req.params.chat_id);
-    // io.getIO().emit("chat", { action: "getAllMessages", messages: messages });
     return res
       .status(200)
       .json(successRes(200, messages, "Messages fetched successfully."));
@@ -48,6 +47,8 @@ const sendMessage = async (req, res) => {
       await store.addParticipants(params);
     }
     const msg = await store.sendMessage(params);
+    io.getIO().emit(params.chat_id, { action: "newMessage", message: msg });
+
     return res
       .status(200)
       .json(successRes(200, msg, "Messages sent successfully."));

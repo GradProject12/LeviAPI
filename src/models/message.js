@@ -73,7 +73,6 @@ class MessageStore {
       `;
       const conn = await client.connect();
       const result = await conn.query(sql, [+user1, +user2]);
-      console.log(result.rows);
       conn.release();
       return result.rows;
     } catch (error) {
