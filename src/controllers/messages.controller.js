@@ -26,6 +26,7 @@ const getAllChats = async (req, res) => {
     );
     const lastMessage = await store.getLastMessage(messages[0].chat_id);
     messages.forEach((chat) => {
+      chat.name = participantInfo.full_name;
       chat.reciver = participantInfo;
       chat.lastSent = lastMessage;
     });
