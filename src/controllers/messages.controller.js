@@ -20,6 +20,15 @@ const getAllMessage = async (req, res) => {
 const getAllChats = async (req, res) => {
   try {
     const messages = await store.getAllChats(req.userId);
+    const participantInfo = await store.getChatParticipant(
+      messages[0].chat_id,
+      req.userId
+    );
+    const lastMessage = await store.getLastMessage(messages[0].chat_id);
+    messages.forEach((chat) => {
+      chat.reciver = participantInfo;
+      chat.lastSent = lastMessage;
+    });
     return res
       .status(200)
       .json(successRes(200, messages, "Chats fetched successfully."));

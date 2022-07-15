@@ -19,7 +19,7 @@ class MessageStore {
   }
   async getAllChats(user_id) {
     try {
-      const sql = `SELECT c.chat_id,c.name FROM participants p
+      const sql = `SELECT c.chat_id FROM participants p
         JOIN chats c ON p.chat_id=c.chat_id
         WHERE user_id=($1) `;
       const conn = await client.connect();
@@ -27,6 +27,36 @@ class MessageStore {
       conn.release();
       if (result.rows.length) return result.rows;
       else throw new Error("No chats exist");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  // Get the info of the other user I'm chating with
+
+  async getChatParticipant(chat_id, user_id) {
+    try {
+      const sql = `SELECT u.user_id,u.full_name,u.profile_image FROM participants p
+      JOIN users u ON u.user_id=p.user_id
+      WHERE chat_id=($1) AND u.user_id!=($2);`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [chat_id, user_id]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("No chats exist");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getLastMessage(chat_id) {
+    try {
+      const sql = `SELECT * FROM messages WHERE chat_id=($1) ORDER BY created_at DESC LIMIT 1`;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [chat_id]);
+      conn.release();
+      if (result.rows.length) return result.rows[0];
+      else throw new Error("No message exist");
     } catch (error) {
       throw new Error(error.message);
     }
