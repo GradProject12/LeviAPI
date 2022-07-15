@@ -18,6 +18,20 @@ const getAllMessage = async (req, res) => {
   }
 };
 
+const getAllChats = async (req, res) => {
+  try {
+    const messages = await store.getAllChats(req.userId);
+    return res
+      .status(200)
+      .json(successRes(200, messages, "Chats fetched successfully."));
+  } catch (error) {
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    res.status(400);
+    res.json(errorRes(400, error.message));
+  }
+};
+
 const sendMessage = async (req, res) => {
   const params = {
     body: req.body.body,
@@ -82,4 +96,5 @@ const remove = async (req, res) => {
 module.exports = {
   getAllMessage,
   sendMessage,
+  getAllChats,
 };

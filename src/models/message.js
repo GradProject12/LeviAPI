@@ -4,13 +4,29 @@ const { stringBetweenParentheses } = require("../services/helpers");
 class MessageStore {
   async getAllMessage(chat_id) {
     try {
-      const sql =
-        "SELECT * FROM messages WHERE chat_id=($1) ORDER BY created_at DESC";
+      const sql = `SELECT m.message_id,m.body,m.read,m.user_id,m.read_at,m.created_at,
+        u.full_name,u.profile_image FROM messages m
+        JOIN users u ON u.user_id=m.user_id
+        WHERE chat_id=($1) ORDER BY m.created_at DESC`;
       const conn = await client.connect();
       const result = await conn.query(sql, [chat_id]);
       conn.release();
       if (result.rows.length) return result.rows;
       else throw new Error("There is no messages exist");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  async getAllChats(user_id) {
+    try {
+      const sql = `SELECT c.chat_id,c.name FROM participants p
+        JOIN chats c ON p.chat_id=c.chat_id
+        WHERE user_id=($1) `;
+      const conn = await client.connect();
+      const result = await conn.query(sql, [user_id]);
+      conn.release();
+      if (result.rows.length) return result.rows;
+      else throw new Error("No chats exist");
     } catch (error) {
       throw new Error(error.message);
     }
