@@ -2,13 +2,14 @@ const MessagesStore = require("../models/message");
 const store = new MessagesStore();
 const { successRes, errorRes } = require("../services/response");
 const io = require("../socket");
-const index = async (_req, res) => {
-  try {
-    const messages = await store.index();
 
-    io.getIO().emit("messages", { action: "getAll", messages: messages });
-    if (messages.length) return res.status(200).json(successRes(200, messages));
-    res.status(200).json(successRes(200, null, "No data exist!"));
+const getAllMessage = async (req, res) => {
+  try {
+    const messages = await store.getAllMessage(req.params.chat_id);
+    // io.getIO().emit("chat", { action: "getAllMessages", messages: messages });
+    return res
+      .status(200)
+      .json(successRes(200, messages, "Messages fetched successfully."));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -17,21 +18,25 @@ const index = async (_req, res) => {
   }
 };
 
-const create = async (req, res) => {
-  const animal = {
-    name: req.body.name,
-    picture: req.body.picture,
-    sound: req.body.sound,
-    spelled: req.body.spelled,
+const sendMessage = async (req, res) => {
+  const params = {
+    body: req.body.body,
+    sender: req.userId,
+    reciver: req.params.reciver_id,
+    name: req.full_name,
   };
   try {
-    if (!animal.name) {
-      const error = new Error("Animal name is missing");
-      error.code = 422;
-      throw error;
+    const exist = await store.checkIfChatExist(params.sender, params.reciver);
+    if (exist.length) params.chat_id = exist[0].chat_id;
+    else {
+      const chat = await store.createChat(params.name);
+      params.chat_id = chat.chat_id;
+      await store.addParticipants(params);
     }
-    await store.create(animal);
-    res.status(200).json(successRes(200, null, "Animal created successfully!"));
+    const msg = await store.sendMessage(params);
+    return res
+      .status(200)
+      .json(successRes(200, msg, "Messages sent successfully."));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
@@ -75,5 +80,6 @@ const remove = async (req, res) => {
 };
 
 module.exports = {
-  index,
+  getAllMessage,
+  sendMessage,
 };
