@@ -186,6 +186,7 @@ exports.login = async (req, res) => {
         email: loggeduser.email,
         userId: loggeduser.user_id,
         name: loggeduser.full_name,
+        role: loggeduser.role,
       },
       process.env.TOKEN_SERCRET
       // {
@@ -198,6 +199,7 @@ exports.login = async (req, res) => {
         {
           id: loggeduser.user_id,
           token,
+          role: loggeduser.role,
         },
         "Logged in successfully"
       )
