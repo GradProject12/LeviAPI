@@ -2,7 +2,7 @@ const BookmarkStore = require("../models/bookmark");
 const store = new BookmarkStore();
 const { successRes, errorRes } = require("../services/response");
 
-const fetchAllBookmarks = async (req, res) => {
+const fetchAllBookmarks = async (req, res, next) => {
   const { type } = req.params;
   try {
     if (!(type === "message" || type === "post"))
@@ -12,12 +12,16 @@ const fetchAllBookmarks = async (req, res) => {
       .status(200)
       .json(successRes(200, bookmarks, "Bookmark fetched successfully"));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const showRelatedMessagesToBookmarkedUser = async (req, res) => {
+const showRelatedMessagesToBookmarkedUser = async (req, res, next) => {
   const { bookmarked_user } = req.params;
   try {
     const bookmark = await store.showRelatedMessagesToBookmarkedUser(
@@ -28,12 +32,16 @@ const showRelatedMessagesToBookmarkedUser = async (req, res) => {
       .status(200)
       .json(successRes(200, bookmark, "User's messages fetched successfully"));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const addToBookmark = async (req, res) => {
+const addToBookmark = async (req, res, next) => {
   try {
     if (!req.body.asset_id) throw new Error("Asset is missing");
     await store.addToBookmark(req.userId, req.body.asset_id);
@@ -41,12 +49,16 @@ const addToBookmark = async (req, res) => {
       .status(201)
       .json(successRes(201, null, "Added to bookmark successfully."));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const deleteBookmark = async (req, res) => {
+const deleteBookmark = async (req, res, next) => {
   try {
     if (!req.body.asset_id) throw new Error("Asset is missing");
     await store.deleteBookmark(req.userId, req.body.asset_id);
@@ -54,8 +66,12 @@ const deleteBookmark = async (req, res) => {
       .status(200)
       .json(successRes(200, null, "Removed from bookmark successfully."));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 

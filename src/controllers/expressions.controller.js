@@ -3,7 +3,7 @@ const { successRes, errorRes } = require("../services/response");
 
 const store = new ExpressionStore();
 
-const index = async (_req, res) => {
+const index = async (_req, res, next) => {
   try {
     const expressions = await store.index();
     if (expressions.length)
@@ -12,24 +12,28 @@ const index = async (_req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const show = async (req, res) => {
+const show = async (req, res, next) => {
   try {
     const expression = await store.show(req.params.id);
     res.status(200).json(successRes(200, expression));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const expression = {
     status: req.body.status,
   };
@@ -56,19 +60,20 @@ const create = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const expression = {
     status: req.body.status,
   };
   try {
     if (
       !expression.status &&
-      !req.files.length &&
-      req.files[0].fieldname !== "sound"
+      (!req.files || req.files[0].fieldname !== "sound")
     )
       throw new Error("No data is entered!");
     if (req.files.length) {
@@ -81,12 +86,14 @@ const update = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   try {
     await store.delete(req.params.id);
     res
@@ -95,8 +102,10 @@ const remove = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 

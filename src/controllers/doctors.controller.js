@@ -4,7 +4,7 @@ const validator = require("validator");
 
 const store = new DoctorStore();
 
-const index = async (_req, res) => {
+const index = async (_req, res, next) => {
   try {
     if (!res.data)
       return res.status(200).json(successRes(200, null, "Nothing exits"));
@@ -25,12 +25,18 @@ const index = async (_req, res) => {
         )
       );
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message, null));
+    if (error.code)
+      return res
+        .status(error.code)
+        .json(errorRes(error.code, error.message, null));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message, null));
+    }
+    next(error);
   }
 };
 
-const showDoctorProfile = async (req, res) => {
+const showDoctorProfile = async (req, res, next) => {
   try {
     const { working_schedule, ...doctor } = await store.showDoctorProfile(
       req.userId
@@ -40,12 +46,16 @@ const showDoctorProfile = async (req, res) => {
       .status(200)
       .json(successRes(200, doctor, "Profile fetched successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const doctor = {
     full_name: req.body.full_name,
     phone: req.body.phone,
@@ -85,36 +95,48 @@ const update = async (req, res) => {
       .status(200)
       .json(successRes(200, null, "Account is updated successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   try {
     await store.delete(req.userId);
     res
       .status(200)
       .json(successRes(200, null, "Account is removed successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const showParentsBelongsToDoctor = async (req, res) => {
+const showParentsBelongsToDoctor = async (req, res, next) => {
   try {
     const parents = await store.showParentsBelongsToDoctor(req.userId);
     res
       .status(200)
       .json(successRes(200, parents, "Parent's fetched successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const addParentToDoctor = async (req, res) => {
+const addParentToDoctor = async (req, res, next) => {
   try {
     const isAdded = await store.checkIfParentIsAdded(req.body.parent_email);
     if (isAdded)
@@ -124,41 +146,58 @@ const addParentToDoctor = async (req, res) => {
       res.status(200).json(successRes(200, null, "Parent added successfully."));
     }
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const removeParentBelongsToDoctor = async (req, res) => {
+const removeParentBelongsToDoctor = async (req, res, next) => {
   try {
     await store.removeParentBelongsToDoctor(req.userId, req.body.parent_email);
     res.status(200).json(successRes(200, null, "Parent added successfully."));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const getDoctorRatings = async (req, res) => {
+const getDoctorRatings = async (req, res, next) => {
   try {
     const parents = await store.getDoctorRatings(req.params.doctor_id);
     res
       .status(200)
       .json(successRes(200, parents, "Rating's fetched successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const getPrivatePosts = async (req, res) => {
+const getPrivatePosts = async (req, res, next) => {
   try {
     const parents = await store.getPrivatePosts(req.params.doctor_id);
     res
       .status(200)
       .json(successRes(200, parents, "Posts's fetched successfully"));
   } catch (error) {
-    res.status(400).json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 

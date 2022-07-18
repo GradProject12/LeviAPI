@@ -3,7 +3,7 @@ const store = new MessagesStore();
 const { successRes, errorRes } = require("../services/response");
 const io = require("../socket");
 
-const getAllMessage = async (req, res) => {
+const getAllMessage = async (req, res, next) => {
   try {
     const messages = await store.getAllMessage(req.params.chat_id);
     return res
@@ -12,12 +12,14 @@ const getAllMessage = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const getAllChats = async (req, res) => {
+const getAllChats = async (req, res, next) => {
   try {
     const messages = await store.getAllChats(req.userId);
     const participantInfo = await store.getChatParticipant(
@@ -36,12 +38,14 @@ const getAllChats = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const sendMessage = async (req, res) => {
+const sendMessage = async (req, res, next) => {
   const params = {
     body: req.body.body,
     sender: req.userId,
@@ -68,11 +72,13 @@ const sendMessage = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const animal = {
     name: req.body.name,
     picture: req.body.picture,
@@ -90,20 +96,24 @@ const update = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   try {
     await store.delete(req.params.id);
     res.status(200).json(successRes(200, null, "Animal deleted successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 

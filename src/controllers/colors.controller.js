@@ -2,7 +2,7 @@ const ColorStore = require("../models/color");
 const store = new ColorStore();
 const { successRes, errorRes } = require("../services/response");
 
-const index = async (_req, res) => {
+const index = async (_req, res, next) => {
   try {
     const colors = await store.index();
     if (colors.length) return res.status(200).json(successRes(200, colors));
@@ -10,24 +10,28 @@ const index = async (_req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const show = async (req, res) => {
+const show = async (req, res, next) => {
   try {
     const color = await store.show(req.params.id);
     res.status(200).json(successRes(200, color));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const color = {
     name: req.body.name,
   };
@@ -45,11 +49,13 @@ const create = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const color = {
     name: req.body.name,
   };
@@ -67,20 +73,24 @@ const update = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   try {
     await store.delete(req.params.id);
     res.status(200).json(successRes(200, null, "Color deleted Successfully!"));
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 

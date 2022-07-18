@@ -4,27 +4,35 @@ const { successRes, errorRes } = require("../services/response");
 
 const store = new RobotStore();
 
-const index = async (_req, res) => {
+const index = async (_req, res, next) => {
   try {
     const robots = await store.index();
     res.status(200).json(successRes(200, robots));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const show = async (req, res) => {
+const show = async (req, res, next) => {
   try {
     const robot = await store.show(req.params.id);
     res.status(200).json(successRes(200, robot));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const robot = {
     parent_id: req.userId,
     doctor_id: req.body.doctor_id,
@@ -36,11 +44,15 @@ const create = async (req, res) => {
       .status(200)
       .json(successRes(200, { username: robot.username, token: token }));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const robot = {
     parent_id: req.userId,
     doctor_id: req.body.doctor_id,
@@ -49,18 +61,26 @@ const update = async (req, res) => {
     const robot2 = await store.update(robot, req.params.id);
     res.status(200).json(successRes(200, robot2));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   try {
     const robot = await store.delete(req.params.id);
     res.status(200).json(successRes(200, robot));
   } catch (error) {
-    res.status(404);
-    res.json(errorRes(404, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 

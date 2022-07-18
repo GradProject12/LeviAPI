@@ -11,7 +11,7 @@ const doctorStore = new DoctorStore();
 const parentStore = new ParentStore();
 const userStore = new UserStore();
 
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
   const secret = speakeasy.generateSecret().base32;
   const user = {
     full_name: req.body.full_name,
@@ -99,12 +99,14 @@ exports.signup = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-exports.verify = async (req, res) => {
+exports.verify = async (req, res, next) => {
   const user = {
     email: req.body.email,
     otp: req.body.otp,
@@ -145,12 +147,14 @@ exports.verify = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   const user = {
     email: req.body.email,
     password: req.body.password,
@@ -207,12 +211,14 @@ exports.login = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-exports.sendCode = async (req, res) => {
+exports.sendCode = async (req, res, next) => {
   const user = {
     email: req.body.email,
   };
@@ -255,7 +261,7 @@ exports.sendCode = async (req, res) => {
   }
 };
 
-exports.forgetPassword = async (req, res) => {
+exports.forgetPassword = async (req, res, next) => {
   const secret = speakeasy.generateSecret().base32;
   const { email } = req.body;
   try {
@@ -282,12 +288,14 @@ exports.forgetPassword = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-exports.verifyPasswordReset = async (req, res) => {
+exports.verifyPasswordReset = async (req, res, next) => {
   const { otp, email } = req.body;
   try {
     if (!email) {
@@ -317,12 +325,14 @@ exports.verifyPasswordReset = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-exports.resetPassword = async (req, res) => {
+exports.resetPassword = async (req, res, next) => {
   const { otp, password, confirm_password, email } = req.body;
   try {
     if (!otp) {
@@ -360,12 +370,14 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-exports.changePassword = async (req, res) => {
+exports.changePassword = async (req, res, next) => {
   const { old_password, new_password, confirm_password } = req.body;
   try {
     if (!old_password) {
@@ -393,7 +405,9 @@ exports.changePassword = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };

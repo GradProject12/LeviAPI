@@ -3,7 +3,7 @@ const store = new PostStore();
 const { successRes, errorRes } = require("../services/response");
 const { deleteFile } = require("../services/helpers");
 
-const index = async (req, res) => {
+const index = async (req, res, next) => {
   try {
     if (!res.data)
       return res.status(400).json(errorRes(400, "Nothing exits", null));
@@ -18,22 +18,32 @@ const index = async (req, res) => {
         )
       );
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message, null));
+    if (error.code)
+      return res
+        .status(error.code)
+        .json(errorRes(error.code, error.message, null));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message, null));
+    }
+    next(error);
   }
 };
 
-const show = async (req, res) => {
+const show = async (req, res, next) => {
   try {
     const post = await store.show(req.params.post_id);
     res.status(200).json(successRes(200, post, "Post fetched successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const post = {
     user_id: req.userId,
     body: req.body.body,
@@ -72,11 +82,13 @@ const create = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const post = {
     body: req.body.body,
   };
@@ -105,12 +117,14 @@ const update = async (req, res) => {
   } catch (error) {
     if (error.code)
       return res.status(error.code).json(errorRes(error.code, error.message));
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   try {
     const { user_id } = await store.show(req.params.post_id);
     if (user_id !== req.userId) {
@@ -125,18 +139,26 @@ const remove = async (req, res) => {
     }
     res.status(200).json(successRes(200, null, "Post is deleted successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
-const showPostsBelongToUser = async (req, res) => {
+const showPostsBelongToUser = async (req, res, next) => {
   try {
     const posts = await store.showPostsBelongToUser(req.userId);
     res.status(200).json(successRes(200, posts, "Posts fetched successfully"));
   } catch (error) {
-    res.status(400);
-    res.json(errorRes(400, error.message));
+    if (error.code)
+      return res.status(error.code).json(errorRes(error.code, error.message));
+    if (error.message) {
+      return res.status(400).json(errorRes(400, error.message));
+    }
+    next(error);
   }
 };
 
